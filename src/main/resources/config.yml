@@ -1,0 +1,7 @@
+# Config
+
+# Chat
+chat-format: "%s&f: %s"
+
+# Practice
+practice-item-name: "slime ball"

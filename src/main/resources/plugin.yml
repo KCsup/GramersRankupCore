@@ -1,0 +1,24 @@
+name: GramersRankupCoreV2
+version: ${project.version}
+main: org.kcsup.gramersrankupcorev2.Main
+api-version: 1.8.8
+description: The second version of the core plugin for the Gramers Rankup Server.
+commands:
+  rank:
+    description: Rank command
+  practice:
+    description: Practice command
+    aliases:
+      - prac
+  unpractice:
+    description: Unpractice command
+    aliases:
+      - unprac
+  warpsign:
+    description: Sign command
+  lobby:
+    description: Lobby Command
+    aliases:
+      - l
+softdepend:
+  - WorldEdit
