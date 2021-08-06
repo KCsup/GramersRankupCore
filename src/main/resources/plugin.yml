@@ -20,5 +20,7 @@ commands:
     description: Lobby Command
     aliases:
       - l
+  save:
+    description: Save command
 softdepend:
   - WorldEdit

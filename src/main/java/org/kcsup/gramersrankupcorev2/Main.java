@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.kcsup.gramersrankupcorev2.commands.*;
 import org.kcsup.gramersrankupcorev2.practice.PracticeManager;
 import org.kcsup.gramersrankupcorev2.ranks.RankManager;
+import org.kcsup.gramersrankupcorev2.saves.SaveManager;
 import org.kcsup.gramersrankupcorev2.signs.SignManager;
 import org.kcsup.gramersrankupcorev2.teams.ScoreboardManager;
 
@@ -15,6 +16,7 @@ public final class Main extends JavaPlugin {
     private ScoreboardManager scoreboardManager;
     private PracticeManager practiceManager;
     private SignManager signManager;
+    private SaveManager saveManager;
 
     private WorldEditPlugin worldEditPlugin;
 
@@ -28,6 +30,7 @@ public final class Main extends JavaPlugin {
         scoreboardManager = new ScoreboardManager(this);
         practiceManager = new PracticeManager(this);
         signManager = new SignManager(this);
+        saveManager = new SaveManager(this);
 
         rankManager.initiateAllPlayerRanks();
         scoreboardManager.reloadScoreboard();
@@ -41,6 +44,8 @@ public final class Main extends JavaPlugin {
         getCommand("warpsign").setExecutor(new WarpSignCommand(this));
 
         getCommand("lobby").setExecutor(new LobbyCommand(this));
+
+        getCommand("save").setExecutor(new SaveCommand(this));
 
         for(Plugin plugin : getServer().getPluginManager().getPlugins()) {
             if(plugin instanceof WorldEditPlugin) {
@@ -65,6 +70,10 @@ public final class Main extends JavaPlugin {
         return signManager;
     }
 
+    public SaveManager getSaveManager() {
+        return saveManager;
+    }
+
     public WorldEditPlugin getWorldEditPlugin() {
         return worldEditPlugin;
     }
@@ -72,6 +81,6 @@ public final class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        getPracticeManager().setAllNotPracticing();
+        practiceManager.setAllNotPracticing();
     }
 }

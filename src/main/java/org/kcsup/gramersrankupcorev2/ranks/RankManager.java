@@ -176,6 +176,8 @@ public class RankManager {
                     FileWriter fileWriter = new FileWriter(rankData);
                     fileWriter.write(rankJson.toString());
                     fileWriter.flush();
+
+                    break;
                 }
             }
             main.getScoreboardManager().reloadScoreboard();
