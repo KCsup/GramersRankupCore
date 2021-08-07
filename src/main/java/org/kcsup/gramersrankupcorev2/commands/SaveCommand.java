@@ -26,15 +26,27 @@ public class SaveCommand implements CommandExecutor {
 
         Player player = (Player) sender;
 
-        if(args.length != 1) {
+        if(args.length < 1) {
             player.sendMessage(ChatColor.RED + "Incorrect Usage! /save (name)");
+            return false;
+        }
+
+        if(main.getPracticeManager().isPracticing(player)) {
+            player.sendMessage(ChatColor.RED + "You cannot create a save while in practice mode!");
             return false;
         }
 
         List<Save> saves = main.getSaveManager().getPlayerSaves(player);
 
-        String name = args[0];
-        Save save = new Save(name, player.getLocation());
+        StringBuilder name = new StringBuilder();
+        for(int i = 0; i < args.length; i++) {
+            if(i == args.length - 1) name.append(args[i]);
+            else name.append(args[i]).append(" ");
+        }
+        if(name.length() > 16) {
+            player.sendMessage(ChatColor.RED + "The name of the save must be 16 characters or less.");
+            return false;
+        }
 
         if(saves != null){
             if(saves.size() == 3) {
@@ -43,15 +55,17 @@ public class SaveCommand implements CommandExecutor {
             }
 
             for(Save s : main.getSaveManager().getPlayerSaves(player)) {
-                if(s.getName().equals(name)) {
+                if(s.getName().equals(name.toString())) {
                     player.sendMessage(ChatColor.RED + "You already have a save stored under this name.");
                     return false;
                 }
             }
         }
 
+        Save save = new Save(name.toString(), player.getLocation());
         main.getSaveManager().storeSaveInstance(player, save);
         player.sendMessage(ChatColor.GREEN + "Saved you current location to the save: " + name);
+        player.teleport(player.getWorld().getSpawnLocation());
 
         return false;
     }

@@ -99,17 +99,19 @@ public class SaveManager {
             for(Object o : players) {
                 JSONObject jsonObject = (JSONObject) o;
                 if(jsonObject.getString("uuid").equals(uuid.toString())) {
-                    List<Save> savesList = getPlayerSaves(player);
-                    for(Save s : savesList) {
+                    JSONArray savesArray = jsonObject.getJSONArray("saves");
+                    for(int i = 0; i < savesArray.length(); i++) {
+                        JSONObject saveJson = savesArray.getJSONObject(i);
+                        Save s = jsonToSave(saveJson);
+
                         if(s.getName().equals(save.getName())) {
-                            savesList.remove(s);
+                            savesArray.remove(i);
                             break;
                         }
                     }
-                    JSONArray saves = new JSONArray(savesList);
-                    jsonObject.put("saves", saves);
+                    jsonObject.put("saves", savesArray);
 
-                    if(saves.isEmpty()) {
+                    if(savesArray.isEmpty()) {
                         for(int i = 0; i < players.length(); i++) {
                             if(players.get(i) == o) {
                                 players.remove(i);
@@ -117,6 +119,7 @@ public class SaveManager {
                             }
                         }
                     }
+                    file.put("players", players);
 
                     FileWriter fileWriter = new FileWriter(saveData);
                     fileWriter.write(file.toString());

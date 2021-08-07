@@ -22,5 +22,7 @@ commands:
       - l
   save:
     description: Save command
+  saves:
+    description: Saves command
 softdepend:
   - WorldEdit

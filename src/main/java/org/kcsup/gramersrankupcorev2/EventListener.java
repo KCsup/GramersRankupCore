@@ -10,6 +10,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.kcsup.gramersrankupcorev2.ranks.Rank;
+import org.kcsup.gramersrankupcorev2.saves.Save;
 import org.kcsup.gramersrankupcorev2.signs.WarpSign;
 import org.kcsup.gramersrankupcorev2.signs.types.LobbySign;
 import org.kcsup.gramersrankupcorev2.signs.types.RankSign;
@@ -141,6 +142,30 @@ public class EventListener implements Listener {
         Player player = (Player) e.getWhoClicked();
 
         if(e.getCurrentItem() == null) return;
+
+        if(e.getInventory().getName().equals(player.getName() + "'s Saves")) {
+            if(e.getCurrentItem().getType().equals(Material.BOOK)) {
+                for(Save s : main.getSaveManager().getPlayerSaves(player)) {
+                    if(e.getCurrentItem().getItemMeta().getDisplayName().equals(s.getName())) {
+                        if(main.getPracticeManager().isPracticing(player)) {
+                            player.closeInventory();
+
+                            player.sendMessage(ChatColor.RED + "You cannot teleport to a save while you're in practice mode!");
+                            break;
+                        }
+
+                        player.closeInventory();
+
+                        player.sendMessage(ChatColor.GREEN + "Teleporting to save: " + s.getName());
+                        player.teleport(s.getLocation());
+                        main.getSaveManager().removeSaveInstance(player, s);
+                        break;
+                    }
+                }
+            }
+            e.setCancelled(true);
+            return;
+        }
 
         if(e.getCurrentItem().equals(main.getPracticeManager().getPracticeItem()) &&
                 main.getPracticeManager().isPracticing(player)) {

@@ -46,6 +46,7 @@ public final class Main extends JavaPlugin {
         getCommand("lobby").setExecutor(new LobbyCommand(this));
 
         getCommand("save").setExecutor(new SaveCommand(this));
+        getCommand("saves").setExecutor(new SavesCommand(this));
 
         for(Plugin plugin : getServer().getPluginManager().getPlugins()) {
             if(plugin instanceof WorldEditPlugin) {
