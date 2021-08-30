@@ -9,8 +9,10 @@ import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
+import org.kcsup.gramersrankupcorev2.menu.Menu;
 import org.kcsup.gramersrankupcorev2.ranks.Rank;
 import org.kcsup.gramersrankupcorev2.saves.Save;
+import org.kcsup.gramersrankupcorev2.signs.SignManager;
 import org.kcsup.gramersrankupcorev2.signs.WarpSign;
 import org.kcsup.gramersrankupcorev2.signs.types.LobbySign;
 import org.kcsup.gramersrankupcorev2.signs.types.RankSign;
@@ -62,6 +64,8 @@ public class EventListener implements Listener {
         }
         main.getRankManager().initiatePlayerRank(player);
         main.getScoreboardManager().reloadScoreboard();
+
+        main.getMenuManager().playerMenuCheck(player);
     }
 
     @EventHandler
@@ -79,10 +83,18 @@ public class EventListener implements Listener {
             return;
         }
 
-        if(e.getItem() != null && e.getItem().equals(main.getPracticeManager().getPracticeItem()) && main.getPracticeManager().isPracticing(player)) {
-            Location location = main.getPracticeManager().getPlayerPracticeLocation(player);
-            if(location != null) player.teleport(location);
-            return;
+        if(e.getItem() != null) {
+            if(e.getItem().equals(main.getPracticeManager().getPracticeItem()) && main.getPracticeManager().isPracticing(player)) {
+                Location location = main.getPracticeManager().getPlayerPracticeLocation(player);
+                if(location != null) player.teleport(location);
+                return;
+            }
+
+            for(Menu menu : main.getMenuManager().getCurrentMenus()) {
+                if(e.getItem().equals(menu.getItem())) {
+                    player.openInventory(menu.getInventory());
+                }
+            }
         }
 
         if(e.getClickedBlock() != null) {
@@ -142,6 +154,58 @@ public class EventListener implements Listener {
         Player player = (Player) e.getWhoClicked();
 
         if(e.getCurrentItem() == null) return;
+
+        if(main.getMenuManager().isMenuItem(e.getCurrentItem())) {
+            e.setCancelled(true);
+            Menu menu = main.getMenuManager().getMenu(e.getCurrentItem());
+            player.openInventory(menu.getInventory());
+        }
+
+        if(main.getMenuManager().isMenuInventory(e.getInventory())) {
+            if(e.getInventory().getTitle().equals("Main Menu")) {
+                switch (e.getCurrentItem().getType()) {
+                    case WORKBENCH:
+                        player.teleport(player.getWorld().getSpawnLocation());
+                        break;
+                    case PRISMARINE_SHARD:
+                        player.openInventory(main.getMenuManager().getRankMenu());
+                        break;
+                    default:
+                        break;
+                }
+            }
+            e.setCancelled(true);
+            return;
+        }
+
+        if(e.getInventory().getTitle().equals("Ranks")) {
+            e.setCancelled(true);
+
+            if(main.getPracticeManager().isPracticing(player)) {
+                player.sendMessage(ChatColor.RED + "You cannot use the ranks menu while in practice mode.");
+                player.closeInventory();
+                return;
+            }
+
+            String rankName = e.getCurrentItem().getItemMeta().getLore().get(0);
+            Rank rank = main.getRankManager().getRank(rankName);
+            if(main.getRankManager().getPlayerRank(player).getWeight() < rank.getWeight()) {
+                player.sendMessage(ChatColor.RED + "You cannot teleport to this rank.");
+                return;
+            } else {
+                for(WarpSign sign : main.getSignManager().getCurrentSigns()) {
+                    if(!(sign instanceof LobbySign)) continue;
+
+                    LobbySign lSign = (LobbySign) sign;
+                    if(lSign.getRequiredRank().getName().equals(rank.getName())) {
+                        player.sendMessage(ChatColor.GREEN + "Teleporting to Rank " + rank.getName() + "!");
+                        player.teleport(lSign.getWarp());
+                        return;
+                    }
+                }
+                player.sendMessage(ChatColor.RED + "This rank is currently unavailable.");
+            }
+        }
 
         if(e.getInventory().getName().equals(player.getName() + "'s Saves")) {
             if(e.getCurrentItem().getType().equals(Material.BOOK)) {

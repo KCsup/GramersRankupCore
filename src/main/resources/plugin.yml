@@ -24,5 +24,7 @@ commands:
     description: Save command
   saves:
     description: Saves command
+  menu:
+    description: Menus command
 softdepend:
   - WorldEdit

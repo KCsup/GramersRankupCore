@@ -2,9 +2,12 @@ package org.kcsup.gramersrankupcorev2;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.kcsup.gramersrankupcorev2.commands.*;
+import org.kcsup.gramersrankupcorev2.menu.Menu;
+import org.kcsup.gramersrankupcorev2.menu.MenuManager;
 import org.kcsup.gramersrankupcorev2.practice.PracticeManager;
 import org.kcsup.gramersrankupcorev2.ranks.RankManager;
 import org.kcsup.gramersrankupcorev2.saves.SaveManager;
@@ -17,6 +20,7 @@ public final class Main extends JavaPlugin {
     private PracticeManager practiceManager;
     private SignManager signManager;
     private SaveManager saveManager;
+    private MenuManager menuManager;
 
     private WorldEditPlugin worldEditPlugin;
 
@@ -31,6 +35,7 @@ public final class Main extends JavaPlugin {
         practiceManager = new PracticeManager(this);
         signManager = new SignManager(this);
         saveManager = new SaveManager(this);
+        menuManager = new MenuManager(this);
 
         rankManager.initiateAllPlayerRanks();
         scoreboardManager.reloadScoreboard();
@@ -48,11 +53,24 @@ public final class Main extends JavaPlugin {
         getCommand("save").setExecutor(new SaveCommand(this));
         getCommand("saves").setExecutor(new SavesCommand(this));
 
+        getCommand("menu").setExecutor(new MenuCommand(this));
+
         for(Plugin plugin : getServer().getPluginManager().getPlugins()) {
             if(plugin instanceof WorldEditPlugin) {
                 worldEditPlugin = (WorldEditPlugin) plugin;
             }
         }
+
+        // TEST
+//        if(menuManager.getCurrentMenus() != null) {
+//            for (Menu menu : menuManager.getCurrentMenus()) {
+//                for (Player player : Bukkit.getOnlinePlayers()) {
+//                    player.sendMessage(menu.getName());
+//                    player.sendMessage(menu.getItem().getItemMeta().getDisplayName());
+//                    player.getInventory().addItem(menu.getItem());
+//                }
+//            }
+//        }
     }
 
     public RankManager getRankManager() {
@@ -73,6 +91,10 @@ public final class Main extends JavaPlugin {
 
     public SaveManager getSaveManager() {
         return saveManager;
+    }
+
+    public MenuManager getMenuManager() {
+        return menuManager;
     }
 
     public WorldEditPlugin getWorldEditPlugin() {

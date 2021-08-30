@@ -47,7 +47,7 @@ public class PracticeManager {
     public void setPracticing(Player player) {
         if(!isPracticing(player)) {
             practicing.put(player, player.getLocation());
-            if(getPracticeItem() != null) player.getInventory().setItem(8, getPracticeItem());
+            if(getPracticeItem() != null) player.getInventory().setItem(7, getPracticeItem());
         }
     }
 
@@ -56,7 +56,7 @@ public class PracticeManager {
             Location location = getPlayerPracticeLocation(player);
             if(location != null) player.teleport(location);
             practicing.remove(player);
-            if(player.getInventory().getItem(8) != null) player.getInventory().setItem(8, null);
+            if(player.getInventory().getItem(7) != null) player.getInventory().setItem(7, null);
         }
     }
 

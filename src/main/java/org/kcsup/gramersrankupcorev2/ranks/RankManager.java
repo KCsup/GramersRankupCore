@@ -71,6 +71,14 @@ public class RankManager {
         return sortedCurrentRanks;
     }
 
+    public List<Rank> getCurrentRanksSortedReversed() {
+        List<Rank> sortedCurrentRanks = new ArrayList<>(getCurrentRanks());
+        Comparator<Rank> compareByWeight = Comparator.comparingInt(Rank::getWeight);
+        sortedCurrentRanks.sort(compareByWeight);
+
+        return sortedCurrentRanks;
+    }
+
     public Rank fileToRank(File file) {
         if(file.getName().endsWith(".json")) {
             try {
