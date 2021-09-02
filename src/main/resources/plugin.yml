@@ -26,5 +26,13 @@ commands:
     description: Saves command
   menu:
     description: Menus command
+  warp:
+    description: Warp command
+  warps:
+    description: Warps command
+  warpcreate:
+    description: Warp Create command
+    aliases:
+      - warpc
 softdepend:
   - WorldEdit

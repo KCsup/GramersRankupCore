@@ -17,6 +17,7 @@ import org.kcsup.gramersrankupcorev2.signs.WarpSign;
 import org.kcsup.gramersrankupcorev2.signs.types.LobbySign;
 import org.kcsup.gramersrankupcorev2.signs.types.RankSign;
 import org.kcsup.gramersrankupcorev2.signs.types.TutorialSign;
+import org.kcsup.gramersrankupcorev2.warps.Warp;
 
 public class EventListener implements Listener {
     private Main main;
@@ -165,7 +166,8 @@ public class EventListener implements Listener {
             if(e.getInventory().getTitle().equals("Main Menu")) {
                 switch (e.getCurrentItem().getType()) {
                     case WORKBENCH:
-                        player.teleport(player.getWorld().getSpawnLocation());
+                        Warp mainLobby = main.getWarpManager().getWarp("Main_Lobby");
+                        if(mainLobby != null) player.teleport(mainLobby.getLocation());
                         break;
                     case PRISMARINE_SHARD:
                         player.openInventory(main.getMenuManager().getRankMenu());
@@ -187,24 +189,34 @@ public class EventListener implements Listener {
                 return;
             }
 
-            String rankName = e.getCurrentItem().getItemMeta().getLore().get(0);
+            String rankName;
+            if(e.getCurrentItem().getItemMeta() != null)
+                rankName = e.getCurrentItem().getItemMeta().getLore().get(0);
+            else
+                return;
+
             Rank rank = main.getRankManager().getRank(rankName);
+
+            // FOR BETA ONLY
+            // TODO: DELETE FOR FULL RELEASE
+            if(rank.getWeight() > 2) {
+                player.sendMessage(ChatColor.RED + "Coming soon!");
+                return;
+            }
+
             if(main.getRankManager().getPlayerRank(player).getWeight() < rank.getWeight()) {
                 player.sendMessage(ChatColor.RED + "You cannot teleport to this rank.");
                 return;
             } else {
-                for(WarpSign sign : main.getSignManager().getCurrentSigns()) {
-                    if(!(sign instanceof LobbySign)) continue;
-
-                    LobbySign lSign = (LobbySign) sign;
-                    if(lSign.getRequiredRank().getName().equals(rank.getName())) {
-                        player.sendMessage(ChatColor.GREEN + "Teleporting to Rank " + rank.getName() + "!");
-                        player.teleport(lSign.getWarp());
-                        return;
-                    }
+                if(main.getWarpManager().isWarp(rank.getName())) {
+                    Warp warp = main.getWarpManager().getWarp(rank.getName());
+                    player.teleport(warp.getLocation());
+                    player.sendMessage(ChatColor.GREEN + "Teleporting to rank " + rank.getName() + "!");
+                    return;
                 }
-                player.sendMessage(ChatColor.RED + "This rank is currently unavailable.");
             }
+            player.sendMessage(ChatColor.RED + "This rank is currently unavailable.");
+            return;
         }
 
         if(e.getInventory().getName().equals(player.getName() + "'s Saves")) {
@@ -250,6 +262,11 @@ public class EventListener implements Listener {
 
         if(e.getItemDrop().getItemStack().equals(main.getPracticeManager().getPracticeItem()) &&
                 main.getPracticeManager().isPracticing(player)) {
+            e.setCancelled(true);
+            return;
+        }
+
+        if(main.getMenuManager().isMenuItem(e.getItemDrop().getItemStack())) {
             e.setCancelled(true);
             return;
         }

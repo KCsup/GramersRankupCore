@@ -16,6 +16,7 @@ import org.kcsup.gramersrankupcorev2.signs.WarpSign;
 import org.kcsup.gramersrankupcorev2.signs.types.LobbySign;
 import org.kcsup.gramersrankupcorev2.signs.types.RankSign;
 import org.kcsup.gramersrankupcorev2.signs.types.TutorialSign;
+import org.kcsup.gramersrankupcorev2.warps.Warp;
 
 public class WarpSignCommand implements CommandExecutor {
     private Main main;
@@ -48,9 +49,12 @@ public class WarpSignCommand implements CommandExecutor {
 
         if(isLocationIgnoringYawPitch(selection.getMaximumPoint(), selection.getMinimumPoint())) {
             try {
+                WarpSign warpSign = null;
+                Warp w = null;
                 Location location = selection.getMaximumPoint();
-                Location warp;
+                Location warp = null;
                 Block block = location.getBlock();
+
                 StringBuilder fullArgsBuilder = new StringBuilder();
                 for (String arg : args) {
                     fullArgsBuilder.append(arg).append(" ");
@@ -63,8 +67,12 @@ public class WarpSignCommand implements CommandExecutor {
                         warp = player.getLocation();
                     } else if(locationArgs.equalsIgnoreCase("spawn")) {
                         warp = player.getWorld().getSpawnLocation();
-                    } else {
-                        warp = null;
+                    } else if(locationArgs.contains("warp:")) {
+                        String warpName = locationArgs.replace("warp:", "");
+                        if(main.getWarpManager().isWarp(warpName)) {
+                            w = main.getWarpManager().getWarp(warpName);
+                            warp = w.getLocation();
+                        }
                     }
 
                     if (warp == null) return false;
@@ -72,8 +80,8 @@ public class WarpSignCommand implements CommandExecutor {
                     String type = args[0];
                     String dividedArgs = fullArgs.substring(fullArgs.indexOf("[") + 1, fullArgs.indexOf("]"));
                     if (type.equalsIgnoreCase("default")) {
-                        WarpSign warpSign = new WarpSign(location, warp, null, "Warp To:", dividedArgs, null);
-                        main.getSignManager().storeSignInstance(warpSign);
+                        warpSign = new WarpSign(location, warp, null, "Warp To:", dividedArgs, null);
+
                     } else if (type.equalsIgnoreCase("rank")) {
                         String[] rankNames = dividedArgs.split(",");
                         if (rankNames.length > 2) return false;
@@ -88,16 +96,14 @@ public class WarpSignCommand implements CommandExecutor {
                         String line3 = "&bClick this Sign to";
                         String line4 = "&bRank Up to&f " + toRank.getName() + "&b!";
 
-                        RankSign rankSign = new RankSign(location, warp, fromRank, toRank, line1, line2, line3, line4);
-                        main.getSignManager().storeSignInstance(rankSign);
+                        warpSign = new RankSign(location, warp, fromRank, toRank, line1, line2, line3, line4);
                     } else if (type.equalsIgnoreCase("lobby")) {
                         Rank rank = main.getRankManager().getRank(dividedArgs);
                         if (rank == null) return false;
 
                         String line = "Rank&f " + rank.getName();
 
-                        LobbySign lobbySign = new LobbySign(location, warp, rank, null, "Warp To:", line, null);
-                        main.getSignManager().storeSignInstance(lobbySign);
+                        warpSign = new LobbySign(location, warp, rank, null, "Warp To:", line, null);
                     } else if (type.equalsIgnoreCase("tutorial")) {
                         String[] tutorialInfo = dividedArgs.split(",");
                         if (tutorialInfo.length > 2) return false;
@@ -105,12 +111,18 @@ public class WarpSignCommand implements CommandExecutor {
                         String name = tutorialInfo[0];
                         String message = tutorialInfo[1];
 
-                        TutorialSign tutorialSign = new TutorialSign(location, message, null, "Tutorial For:", name, null);
-                        main.getSignManager().storeSignInstance(tutorialSign);
+                        warpSign = new TutorialSign(location, message, null, "Tutorial For:", name, null);
+                    }
+                    if(warpSign != null) {
+                        main.getSignManager().storeSignInstance(warpSign);
+                        if(w != null) {
+                            main.getSignManager().setSignLocationToWarp(warpSign.getLocation(), w);
+                        }
                     }
                 }
             } catch (Exception e) {
                 player.sendMessage(ChatColor.RED + "You used this command incorrectly. Fuck you.");
+                e.printStackTrace();
             }
         } else {
             player.sendMessage(ChatColor.RED + "Selection is more than one block.");

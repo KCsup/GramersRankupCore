@@ -2,6 +2,8 @@ package org.kcsup.gramersrankupcorev2;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,6 +15,7 @@ import org.kcsup.gramersrankupcorev2.ranks.RankManager;
 import org.kcsup.gramersrankupcorev2.saves.SaveManager;
 import org.kcsup.gramersrankupcorev2.signs.SignManager;
 import org.kcsup.gramersrankupcorev2.teams.ScoreboardManager;
+import org.kcsup.gramersrankupcorev2.warps.WarpManager;
 
 public final class Main extends JavaPlugin {
     private RankManager rankManager;
@@ -21,6 +24,7 @@ public final class Main extends JavaPlugin {
     private SignManager signManager;
     private SaveManager saveManager;
     private MenuManager menuManager;
+    private WarpManager warpManager;
 
     private WorldEditPlugin worldEditPlugin;
 
@@ -36,6 +40,7 @@ public final class Main extends JavaPlugin {
         signManager = new SignManager(this);
         saveManager = new SaveManager(this);
         menuManager = new MenuManager(this);
+        warpManager = new WarpManager(this);
 
         rankManager.initiateAllPlayerRanks();
         scoreboardManager.reloadScoreboard();
@@ -55,6 +60,10 @@ public final class Main extends JavaPlugin {
 
         getCommand("menu").setExecutor(new MenuCommand(this));
 
+        getCommand("warp").setExecutor(new WarpCommand(this));
+        getCommand("warps").setExecutor(new WarpsCommand(this));
+        getCommand("warpcreate").setExecutor(new WarpCreateCommand(this));
+
         for(Plugin plugin : getServer().getPluginManager().getPlugins()) {
             if(plugin instanceof WorldEditPlugin) {
                 worldEditPlugin = (WorldEditPlugin) plugin;
@@ -71,6 +80,7 @@ public final class Main extends JavaPlugin {
 //                }
 //            }
 //        }
+
     }
 
     public RankManager getRankManager() {
@@ -95,6 +105,10 @@ public final class Main extends JavaPlugin {
 
     public MenuManager getMenuManager() {
         return menuManager;
+    }
+
+    public WarpManager getWarpManager() {
+        return warpManager;
     }
 
     public WorldEditPlugin getWorldEditPlugin() {

@@ -9,6 +9,7 @@ import org.kcsup.gramersrankupcorev2.ranks.Rank;
 import org.kcsup.gramersrankupcorev2.signs.types.LobbySign;
 import org.kcsup.gramersrankupcorev2.signs.types.RankSign;
 import org.kcsup.gramersrankupcorev2.signs.types.TutorialSign;
+import org.kcsup.gramersrankupcorev2.warps.Warp;
 
 import java.io.File;
 import java.io.FileReader;
@@ -138,10 +139,22 @@ public class SignManager {
         Location location = jsonToLocation(signInfo.getJSONObject("location"));
 
         Location warp;
-        try {
-            warp = jsonToLocation(signInfo.getJSONObject("warp"));
-        } catch (JSONException e) {
+        Object warpJ = signInfo.get("warp");
+        if(warpJ.getClass().equals(JSONObject.NULL.getClass())) {
             warp = null;
+        } else {
+            JSONObject warpJson = (JSONObject) warpJ;
+            if (warpJson.has("warp")) {
+                String warpName = warpJson.getString("warp");
+                if (main.getWarpManager().isWarp(warpName)) {
+                    Warp w = main.getWarpManager().getWarp(warpName);
+                    warp = w.getLocation();
+                } else {
+                    warp = null;
+                }
+            } else {
+                warp = jsonToLocation(warpJson);
+            }
         }
 
         JSONArray jsonLines = signInfo.getJSONArray("lines");
@@ -200,6 +213,39 @@ public class SignManager {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public void setSignLocationToWarp(Location location, Warp warp) {
+        if(signData == null || warp == null) return;
+
+        try {
+            FileReader fileReader = new FileReader(signData);
+            JSONTokener jsonTokener = new JSONTokener(fileReader);
+            JSONObject file = new JSONObject(jsonTokener);
+
+            JSONArray signs = file.getJSONArray("signs");
+
+            for(Object sign : signs) {
+                JSONObject jsonSign = (JSONObject) sign;
+                JSONObject signLocationJson = jsonSign.getJSONObject("info").getJSONObject("location");
+                Location signLocation = jsonToLocation(signLocationJson);
+                if(isLocationIgnoringYawPitch(signLocation, location)) {
+                    JSONObject signInfo = jsonSign.getJSONObject("info");
+
+                    JSONObject warpJson = new JSONObject();
+                    warpJson.put("warp", warp.getName());
+
+                    signInfo.put("warp", warpJson);
+
+                    FileWriter fileWriter = new FileWriter(signData);
+                    fileWriter.write(file.toString());
+                    fileWriter.flush();
+                    return;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
