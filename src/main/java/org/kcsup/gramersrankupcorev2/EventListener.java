@@ -67,6 +67,8 @@ public class EventListener implements Listener {
         main.getScoreboardManager().reloadScoreboard();
 
         main.getMenuManager().playerMenuCheck(player);
+        main.getVisibilityManager().visibilityItemCheck(player);
+        main.getVisibilityManager().updateInvisible();
     }
 
     @EventHandler
@@ -89,6 +91,10 @@ public class EventListener implements Listener {
                 Location location = main.getPracticeManager().getPlayerPracticeLocation(player);
                 if(location != null) player.teleport(location);
                 return;
+            }
+
+            if(e.getItem().equals(main.getVisibilityManager().getVisibilityItem(player))) {
+                main.getVisibilityManager().toggleVisibility(player);
             }
 
             for(Menu menu : main.getMenuManager().getCurrentMenus()) {
@@ -199,9 +205,11 @@ public class EventListener implements Listener {
 
             // FOR BETA ONLY
             // TODO: DELETE FOR FULL RELEASE
-            if(rank.getWeight() > 2) {
-                player.sendMessage(ChatColor.RED + "Coming soon!");
-                return;
+            if(main.getConfig().contains("rank-limit")) {
+                if (rank.getWeight() > main.getConfig().getInt("rank-limit")) {
+                    player.sendMessage(ChatColor.RED + "Coming soon!");
+                    return;
+                }
             }
 
             if(main.getRankManager().getPlayerRank(player).getWeight() < rank.getWeight()) {
@@ -249,6 +257,11 @@ public class EventListener implements Listener {
             return;
         }
 
+        if(e.getCurrentItem().equals(main.getVisibilityManager().getVisibilityItem(player))) {
+            e.setCancelled(true);
+            return;
+        }
+
         if(!player.isOp()) {
             e.setCancelled(true);
         }
@@ -262,6 +275,11 @@ public class EventListener implements Listener {
 
         if(e.getItemDrop().getItemStack().equals(main.getPracticeManager().getPracticeItem()) &&
                 main.getPracticeManager().isPracticing(player)) {
+            e.setCancelled(true);
+            return;
+        }
+
+        if(e.getItemDrop().getItemStack().equals(main.getVisibilityManager().getVisibilityItem(player))) {
             e.setCancelled(true);
             return;
         }

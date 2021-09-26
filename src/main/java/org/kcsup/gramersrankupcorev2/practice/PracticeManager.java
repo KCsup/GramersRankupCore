@@ -15,9 +15,15 @@ import java.util.HashMap;
 public class PracticeManager {
     private Main main;
     private HashMap<Player, Location> practicing = new HashMap<>();
+    private int practiceItemSlot;
 
     public PracticeManager(Main main) {
         this.main = main;
+        practiceItemSlot = main.getConfig().getInt("practice-item-slot");
+    }
+
+    public int getPracticeItemSlot() {
+        return practiceItemSlot;
     }
 
     public ItemStack getPracticeItem() {
@@ -47,7 +53,7 @@ public class PracticeManager {
     public void setPracticing(Player player) {
         if(!isPracticing(player)) {
             practicing.put(player, player.getLocation());
-            if(getPracticeItem() != null) player.getInventory().setItem(7, getPracticeItem());
+            if(getPracticeItem() != null) player.getInventory().setItem(getPracticeItemSlot(), getPracticeItem());
         }
     }
 
@@ -56,7 +62,7 @@ public class PracticeManager {
             Location location = getPlayerPracticeLocation(player);
             if(location != null) player.teleport(location);
             practicing.remove(player);
-            if(player.getInventory().getItem(7) != null) player.getInventory().setItem(7, null);
+            if(player.getInventory().getItem(getPracticeItemSlot()) != null) player.getInventory().setItem(getPracticeItemSlot(), null);
         }
     }
 

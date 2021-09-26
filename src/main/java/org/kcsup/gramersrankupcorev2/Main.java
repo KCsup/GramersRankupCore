@@ -2,19 +2,16 @@ package org.kcsup.gramersrankupcorev2;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.kcsup.gramersrankupcorev2.commands.*;
-import org.kcsup.gramersrankupcorev2.menu.Menu;
 import org.kcsup.gramersrankupcorev2.menu.MenuManager;
 import org.kcsup.gramersrankupcorev2.practice.PracticeManager;
 import org.kcsup.gramersrankupcorev2.ranks.RankManager;
 import org.kcsup.gramersrankupcorev2.saves.SaveManager;
 import org.kcsup.gramersrankupcorev2.signs.SignManager;
 import org.kcsup.gramersrankupcorev2.teams.ScoreboardManager;
+import org.kcsup.gramersrankupcorev2.visibility.VisibilityManager;
 import org.kcsup.gramersrankupcorev2.warps.WarpManager;
 
 public final class Main extends JavaPlugin {
@@ -25,6 +22,7 @@ public final class Main extends JavaPlugin {
     private SaveManager saveManager;
     private MenuManager menuManager;
     private WarpManager warpManager;
+    private VisibilityManager visibilityManager;
 
     private WorldEditPlugin worldEditPlugin;
 
@@ -41,6 +39,7 @@ public final class Main extends JavaPlugin {
         saveManager = new SaveManager(this);
         menuManager = new MenuManager(this);
         warpManager = new WarpManager(this);
+        visibilityManager = new VisibilityManager(this);
 
         rankManager.initiateAllPlayerRanks();
         scoreboardManager.reloadScoreboard();
@@ -111,6 +110,8 @@ public final class Main extends JavaPlugin {
         return warpManager;
     }
 
+    public VisibilityManager getVisibilityManager() { return visibilityManager; }
+
     public WorldEditPlugin getWorldEditPlugin() {
         return worldEditPlugin;
     }
@@ -119,5 +120,6 @@ public final class Main extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
         practiceManager.setAllNotPracticing();
+        visibilityManager.purgeInvisible();
     }
 }

@@ -5,3 +5,15 @@ chat-format: "%s&f: %s"
 
 # Practice
 practice-item-name: "slime ball"
+practice-item-slot: 6
+
+# Menu
+main-menu-item-slot: 8
+
+# Visibility
+visibility-on-item-name: "sugar"
+visibility-off-item-name: "glowstone dust"
+visibility-item-slot: 7
+
+# Beta
+rank-limit: 3

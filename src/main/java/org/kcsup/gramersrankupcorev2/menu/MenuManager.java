@@ -25,10 +25,16 @@ import java.util.List;
 public class MenuManager {
     private Main main;
     private File menuData;
+    private int mainMenuSlot;
 
     public MenuManager(Main main) {
         this.main = main;
+        mainMenuSlot = main.getConfig().getInt("main-menu-item-slot");
         filesCheck();
+    }
+
+    public int getMainMenuSlot() {
+        return mainMenuSlot;
     }
 
     private void filesCheck() {
@@ -55,8 +61,8 @@ public class MenuManager {
         Menu mainMenu = getMenu("Main Menu");
         if(mainMenu == null) return;
 
-        if(pInventory.getItem(8) == null || !pInventory.getItem(8).equals(mainMenu.getItem()))
-        player.getInventory().setItem(8, mainMenu.getItem());
+        if(pInventory.getItem(mainMenuSlot) == null || !pInventory.getItem(mainMenuSlot).equals(mainMenu.getItem()))
+        player.getInventory().setItem(mainMenuSlot, mainMenu.getItem());
     }
 
     public Menu getMenu(String name) {
