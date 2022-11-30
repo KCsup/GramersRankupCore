@@ -1,7 +1,5 @@
 package org.kcsup.gramersrankupcorev2.util;
 
-import java.lang.reflect.Type;
-
 public class Pair<A, B> {
     
     public A object1;
