@@ -179,7 +179,7 @@ public class MenuManager {
             JSONObject jsonItem = (JSONObject) o;
             Pair<ItemStack, Integer> inventoryItem = jsonToInventoryItem(jsonItem);
             if(inventoryItem != null)
-                inventory.setItem(inventoryItem.getSecond(), inventoryItem.getFirst());
+                inventory.setItem(inventoryItem.getValue(), inventoryItem.getKey());
         }
 
         JSONObject jsonItem = jsonObject.getJSONObject("item");
