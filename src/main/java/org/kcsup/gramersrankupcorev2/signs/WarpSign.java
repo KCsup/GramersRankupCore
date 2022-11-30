@@ -4,7 +4,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
-import org.bukkit.material.MaterialData;
 
 public class WarpSign {
     private Location location;

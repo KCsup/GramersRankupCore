@@ -1,10 +1,8 @@
 package org.kcsup.gramersrankupcorev2.menu;
 
-import javafx.util.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -14,6 +12,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.kcsup.gramersrankupcorev2.Main;
 import org.kcsup.gramersrankupcorev2.ranks.Rank;
+import org.kcsup.gramersrankupcorev2.util.Pair;
 
 import java.io.File;
 import java.io.FileReader;
@@ -62,7 +61,7 @@ public class MenuManager {
         if(mainMenu == null) return;
 
         if(pInventory.getItem(mainMenuSlot) == null || !pInventory.getItem(mainMenuSlot).equals(mainMenu.getItem()))
-        player.getInventory().setItem(mainMenuSlot, mainMenu.getItem());
+            player.getInventory().setItem(mainMenuSlot, mainMenu.getItem());
     }
 
     public Menu getMenu(String name) {
@@ -180,7 +179,7 @@ public class MenuManager {
             JSONObject jsonItem = (JSONObject) o;
             Pair<ItemStack, Integer> inventoryItem = jsonToInventoryItem(jsonItem);
             if(inventoryItem != null)
-            inventory.setItem(inventoryItem.getValue(), inventoryItem.getKey());
+                inventory.setItem(inventoryItem.getSecond(), inventoryItem.getFirst());
         }
 
         JSONObject jsonItem = jsonObject.getJSONObject("item");

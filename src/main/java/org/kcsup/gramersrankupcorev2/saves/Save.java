@@ -1,8 +1,6 @@
 package org.kcsup.gramersrankupcorev2.saves;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.inventory.Inventory;
 
 public class Save {
     private String name;

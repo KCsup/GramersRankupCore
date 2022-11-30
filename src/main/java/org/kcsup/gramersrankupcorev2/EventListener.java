@@ -12,7 +12,6 @@ import org.bukkit.event.player.*;
 import org.kcsup.gramersrankupcorev2.menu.Menu;
 import org.kcsup.gramersrankupcorev2.ranks.Rank;
 import org.kcsup.gramersrankupcorev2.saves.Save;
-import org.kcsup.gramersrankupcorev2.signs.SignManager;
 import org.kcsup.gramersrankupcorev2.signs.WarpSign;
 import org.kcsup.gramersrankupcorev2.signs.types.LobbySign;
 import org.kcsup.gramersrankupcorev2.signs.types.RankSign;

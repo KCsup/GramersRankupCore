@@ -7,10 +7,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.kcsup.gramersrankupcorev2.Main;
 import org.kcsup.gramersrankupcorev2.ranks.Rank;
-import org.kcsup.gramersrankupcorev2.ranks.RankManager;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class ScoreboardManager {

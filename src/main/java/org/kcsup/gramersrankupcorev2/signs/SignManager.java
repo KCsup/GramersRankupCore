@@ -3,7 +3,9 @@ package org.kcsup.gramersrankupcorev2.signs;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.kcsup.gramersrankupcorev2.Main;
 import org.kcsup.gramersrankupcorev2.ranks.Rank;
 import org.kcsup.gramersrankupcorev2.signs.types.LobbySign;
@@ -16,7 +18,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class SignManager {

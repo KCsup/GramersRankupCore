@@ -8,7 +8,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.kcsup.gramersrankupcorev2.Main;
 import org.kcsup.gramersrankupcorev2.ranks.Rank;
-import org.kcsup.gramersrankupcorev2.ranks.RankManager;
 
 public class RankCommand implements CommandExecutor {
     private Main main;

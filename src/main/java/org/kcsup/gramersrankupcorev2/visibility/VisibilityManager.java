@@ -1,14 +1,14 @@
 package org.kcsup.gramersrankupcorev2.visibility;
 
-import org.bukkit.*;
-import org.bukkit.entity.Item;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.kcsup.gramersrankupcorev2.Main;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class VisibilityManager {
