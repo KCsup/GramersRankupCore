@@ -1,8 +1,8 @@
-name: GramersRankupCoreV2
+name: GramersRankupCore
 version: ${project.version}
-main: org.kcsup.gramersrankupcorev2.Main
+main: org.kcsup.gramersrankupcore.Main
 api-version: 1.8.8
-description: The second version of the core plugin for the Gramers Rankup Server.
+description: The core plugin for the Gramers Rankup Server.
 commands:
   rank:
     description: Rank command
