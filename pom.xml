@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.kcsup</groupId>
-    <artifactId>gramers-rankup-core-v2</artifactId>
+    <artifactId>gramers-rankup-core</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>GramersRankupCoreV2</name>
+    <name>GramersRankupCore</name>
 
     <description>The second version of the core plugin for the Gramers Rankup Server.</description>
     <properties>
