@@ -1,6 +1,7 @@
 package org.kcsup.gramersrankupcorev2;
 
-import com.sk89q.worldedit.WorldEdit;
+
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,7 +25,7 @@ public final class Main extends JavaPlugin {
     private WarpManager warpManager;
     private VisibilityManager visibilityManager;
 
-    private WorldEdit worldEditPlugin;
+    private WorldEditPlugin worldEditPlugin;
 
     @Override
     public void onEnable() {
@@ -64,8 +65,8 @@ public final class Main extends JavaPlugin {
         getCommand("warpcreate").setExecutor(new WarpCreateCommand(this));
 
         for(Plugin plugin : getServer().getPluginManager().getPlugins()) {
-            if(plugin instanceof WorldEdit) {
-                worldEditPlugin = (WorldEdit) plugin;
+            if(plugin instanceof WorldEditPlugin) {
+                worldEditPlugin = (WorldEditPlugin) plugin;
             }
         }
 
@@ -112,7 +113,7 @@ public final class Main extends JavaPlugin {
 
     public VisibilityManager getVisibilityManager() { return visibilityManager; }
 
-    public WorldEdit getWorldEditPlugin() {
+    public WorldEditPlugin getWorldEditPlugin() {
         return worldEditPlugin;
     }
 
