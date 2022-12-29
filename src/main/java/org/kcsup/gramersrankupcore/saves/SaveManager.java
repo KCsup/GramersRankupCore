@@ -8,6 +8,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.kcsup.gramersrankupcore.Main;
+import org.kcsup.gramersrankupcore.util.Manager;
+import org.kcsup.gramersrankupcore.util.Util;
 
 import java.io.File;
 import java.io.FileReader;
@@ -17,32 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class SaveManager {
-    private Main main;
-    private File saveData;
+public class SaveManager extends Manager {
 
     public SaveManager(Main main) {
-        this.main = main;
-        filesCheck();
-    }
-
-    private void filesCheck() {
-        String saveDataPath = main.getDataFolder() + "/saveData.json";
-        saveData = new File(saveDataPath);
-        if(!saveData.exists()) {
-            try {
-                saveData.createNewFile();
-
-                JSONObject file = new JSONObject();
-                file.put("players", new JSONArray());
-
-                FileWriter fileWriter = new FileWriter(saveDataPath);
-                fileWriter.write(file.toString());
-                fileWriter.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        super(
+                main,
+                "/saveData.json",
+                new JSONObject().put("players", new JSONArray())
+        );
     }
 
     public Save getPlayerSave(Player player, String name) {
@@ -60,10 +44,10 @@ public class SaveManager {
 
         UUID uuid = player.getUniqueId();
 
-        if(saveData == null) return null;
+        if(dataFile == null) return null;
 
         try {
-            FileReader fileReader = new FileReader(saveData);
+            FileReader fileReader = new FileReader(dataFile);
             JSONTokener jsonTokener = new JSONTokener(fileReader);
             JSONObject file = new JSONObject(jsonTokener);
             JSONArray players = file.getJSONArray("players");
@@ -91,10 +75,10 @@ public class SaveManager {
     public void removeSaveInstance(Player player, Save save) {
         UUID uuid = player.getUniqueId();
 
-        if(saveData == null || save == null) return;
+        if(dataFile == null || save == null) return;
 
         try {
-            FileReader fileReader = new FileReader(saveData);
+            FileReader fileReader = new FileReader(dataFile);
             JSONTokener jsonTokener = new JSONTokener(fileReader);
             JSONObject file = new JSONObject(jsonTokener);
             JSONArray players = file.getJSONArray("players");
@@ -124,7 +108,7 @@ public class SaveManager {
                     }
                     file.put("players", players);
 
-                    FileWriter fileWriter = new FileWriter(saveData);
+                    FileWriter fileWriter = new FileWriter(dataFile);
                     fileWriter.write(file.toString());
                     fileWriter.flush();
 
@@ -139,14 +123,14 @@ public class SaveManager {
     public void storeSaveInstance(Player player, Save save) {
         UUID uuid = player.getUniqueId();
 
-        if(saveData == null || save == null) return;
+        if(dataFile == null || save == null) return;
 
         if(getPlayerSaves(player) == null) {
             initiatePlayerSaves(player);
         }
 
         try {
-            FileReader fileReader = new FileReader(saveData);
+            FileReader fileReader = new FileReader(dataFile);
             JSONTokener jsonTokener = new JSONTokener(fileReader);
             JSONObject file = new JSONObject(jsonTokener);
             JSONArray players = file.getJSONArray("players");
@@ -157,7 +141,7 @@ public class SaveManager {
                     JSONArray saves = jsonObject.getJSONArray("saves");
                     saves.put(saveToJson(save));
 
-                    FileWriter fileWriter = new FileWriter(saveData);
+                    FileWriter fileWriter = new FileWriter(dataFile);
                     fileWriter.write(file.toString());
                     fileWriter.flush();
 
@@ -173,7 +157,7 @@ public class SaveManager {
         UUID uuid = player.getUniqueId();
 
         try {
-            FileReader fileReader = new FileReader(saveData);
+            FileReader fileReader = new FileReader(dataFile);
             JSONTokener jsonTokener = new JSONTokener(fileReader);
             JSONObject file = new JSONObject(jsonTokener);
             JSONArray players = file.getJSONArray("players");
@@ -183,7 +167,7 @@ public class SaveManager {
             playerObject.put("saves", new JSONArray());
             players.put(playerObject);
 
-            FileWriter fileWriter = new FileWriter(saveData);
+            FileWriter fileWriter = new FileWriter(dataFile);
             fileWriter.write(file.toString());
             fileWriter.flush();
         } catch (IOException e) {
@@ -196,7 +180,7 @@ public class SaveManager {
 
         JSONObject saveJson = new JSONObject();
         saveJson.put("name", save.getName());
-        saveJson.put("location", locationToJson(save.getLocation()));
+        saveJson.put("location", Util.locationToJson(save.getLocation()));
 
         return saveJson;
     }
@@ -205,35 +189,9 @@ public class SaveManager {
         if(jsonObject == null) return null;
 
         String name = jsonObject.getString("name");
-        Location location = jsonToLocation(jsonObject.getJSONObject("location"));
+        Location location = Util.jsonToLocation(jsonObject.getJSONObject("location"));
 
         return new Save(name, location);
     }
 
-    public JSONObject locationToJson(Location location) {
-        if(location == null) return null;
-
-        JSONObject locationJson = new JSONObject();
-        locationJson.put("world", location.getWorld().getName());
-        locationJson.put("x", location.getX());
-        locationJson.put("y", location.getY());
-        locationJson.put("z", location.getZ());
-        locationJson.put("yaw", location.getYaw());
-        locationJson.put("pitch", location.getPitch());
-
-        return locationJson;
-    }
-
-    public Location jsonToLocation(JSONObject jsonObject) {
-        if(jsonObject == null) return null;
-
-        World world = Bukkit.getWorld(jsonObject.getString("world"));
-        double x = jsonObject.getDouble("x");
-        double y = jsonObject.getDouble("y");
-        double z = jsonObject.getDouble("z");
-        float yaw = jsonObject.getFloat("yaw");
-        float pitch = jsonObject.getFloat("pitch");
-
-        return new Location(world, x, y, z, yaw, pitch);
-    }
 }

@@ -10,11 +10,11 @@ import org.kcsup.gramersrankupcore.ranks.Rank;
 
 import java.util.List;
 
-public class ScoreboardManager {
-    private Main main;
+public class ScoreboardUtil {
+    private final Main main;
     private Scoreboard scoreboard;
 
-    public ScoreboardManager(Main main) {
+    public ScoreboardUtil(Main main) {
         this.main = main;
     }
 

@@ -11,13 +11,13 @@ import org.kcsup.gramersrankupcore.Main;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VisibilityManager {
-    private Main main;
-    private List<Player> invisible = new ArrayList<>();
-    private List<Player> onCooldown = new ArrayList<>();
-    private int visibilityItemSlot;
+public class VisibilityUtil {
+    private final Main main;
+    private final List<Player> invisible = new ArrayList<>();
+    private final List<Player> onCooldown = new ArrayList<>();
+    private final int visibilityItemSlot;
 
-    public VisibilityManager(Main main) {
+    public VisibilityUtil(Main main) {
         this.main = main;
         visibilityItemSlot = main.getConfig().getInt("visibility-item-slot");
     }

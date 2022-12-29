@@ -4,7 +4,7 @@ import org.bukkit.Location;
 import org.kcsup.gramersrankupcore.signs.WarpSign;
 
 public class TutorialSign extends WarpSign {
-    private String message;
+    private final String message;
 
     public TutorialSign(Location location, String message) {
         super(location, null);

@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.kcsup.gramersrankupcore.Main;
 import org.kcsup.gramersrankupcore.ranks.Rank;
+import org.kcsup.gramersrankupcore.util.Manager;
 import org.kcsup.gramersrankupcore.util.Pair;
 
 import java.io.File;
@@ -21,38 +22,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuManager {
-    private Main main;
-    private File menuData;
-    private int mainMenuSlot;
+public class MenuManager extends Manager {
+
+    private final int mainMenuSlot;
 
     public MenuManager(Main main) {
-        this.main = main;
+        super(
+                main,
+                "/menuData.json",
+                new JSONObject().put("menus", new JSONArray())
+        );
+
         mainMenuSlot = main.getConfig().getInt("main-menu-item-slot");
-        filesCheck();
     }
 
     public int getMainMenuSlot() {
         return mainMenuSlot;
-    }
-
-    private void filesCheck() {
-        String menuDataPath = main.getDataFolder() + "/menuData.json";
-        menuData = new File(menuDataPath);
-        if(!menuData.exists()) {
-            try {
-                menuData.createNewFile();
-
-                JSONObject file = new JSONObject();
-                file.put("menus", new JSONArray());
-
-                FileWriter fileWriter = new FileWriter(menuDataPath);
-                fileWriter.write(file.toString());
-                fileWriter.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public void playerMenuCheck(Player player) {
@@ -87,10 +72,10 @@ public class MenuManager {
     public List<Menu> getCurrentMenus() {
         List<Menu> menus = new ArrayList<>();
 
-        if(menuData == null) return null;
+        if(dataFile == null) return null;
 
         try {
-            FileReader fileReader = new FileReader(menuData);
+            FileReader fileReader = new FileReader(dataFile);
             JSONTokener jsonTokener = new JSONTokener(fileReader);
             JSONObject file = new JSONObject(jsonTokener);
             JSONArray jsonMenus = file.getJSONArray("menus");
@@ -111,10 +96,10 @@ public class MenuManager {
     }
 
     public void storeMenuInstance(Menu menu) {
-        if(menuData == null || menu == null) return;
+        if(dataFile == null || menu == null) return;
 
         try {
-            FileReader fileReader = new FileReader(menuData);
+            FileReader fileReader = new FileReader(dataFile);
             JSONTokener jsonTokener = new JSONTokener(fileReader);
             JSONObject file = new JSONObject(jsonTokener);
             JSONArray menus = file.getJSONArray("menus");
@@ -122,7 +107,7 @@ public class MenuManager {
             JSONObject jsonMenu = menuToJson(menu);
             menus.put(jsonMenu);
 
-            FileWriter fileWriter = new FileWriter(menuData);
+            FileWriter fileWriter = new FileWriter(dataFile);
             fileWriter.write(file.toString());
             fileWriter.flush();
         } catch (IOException e) {
@@ -217,16 +202,6 @@ public class MenuManager {
 
             inventory.put(jsonItem);
         }
-
-//        for(ItemStack item : menu.getInventory().getContents()) {
-//            if(item == null) continue;
-//
-//            JSONObject jsonItem = new JSONObject();
-//            jsonItem.put("item", item.getType().name());
-//            jsonItem.put("name", item.getItemMeta().getDisplayName());
-//
-//            inventory.put(jsonItem);
-//        }
 
         menuJson.put("inventory", inventory);
 

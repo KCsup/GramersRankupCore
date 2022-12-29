@@ -10,12 +10,12 @@ import org.kcsup.gramersrankupcore.Main;
 
 import java.util.HashMap;
 
-public class PracticeManager {
-    private Main main;
-    private HashMap<Player, Location> practicing = new HashMap<>();
-    private int practiceItemSlot;
+public class Practice {
+    private final Main main;
+    private final HashMap<Player, Location> practicing = new HashMap<>();
+    private final int practiceItemSlot;
 
-    public PracticeManager(Main main) {
+    public Practice(Main main) {
         this.main = main;
         practiceItemSlot = main.getConfig().getInt("practice-item-slot");
     }

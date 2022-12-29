@@ -5,8 +5,8 @@ import org.kcsup.gramersrankupcore.ranks.Rank;
 import org.kcsup.gramersrankupcore.signs.WarpSign;
 
 public class RankSign extends WarpSign {
-    private Rank fromRank;
-    private Rank toRank;
+    private final Rank fromRank;
+    private final Rank toRank;
 
     public RankSign(Location location, Location warp, Rank fromRank, Rank toRank) {
         super(location, warp);

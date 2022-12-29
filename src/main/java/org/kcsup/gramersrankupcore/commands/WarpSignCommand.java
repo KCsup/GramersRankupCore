@@ -16,10 +16,11 @@ import org.kcsup.gramersrankupcore.signs.WarpSign;
 import org.kcsup.gramersrankupcore.signs.types.LobbySign;
 import org.kcsup.gramersrankupcore.signs.types.RankSign;
 import org.kcsup.gramersrankupcore.signs.types.TutorialSign;
+import org.kcsup.gramersrankupcore.util.Util;
 import org.kcsup.gramersrankupcore.warps.Warp;
 
 public class WarpSignCommand implements CommandExecutor {
-    private Main main;
+    private final Main main;
 
     public WarpSignCommand(Main main) {
         this.main = main;
@@ -47,7 +48,7 @@ public class WarpSignCommand implements CommandExecutor {
         Selection selection = worldEditPlugin.getSelection(player);
         if(selection == null) return false;
 
-        if(isLocationIgnoringYawPitch(selection.getMaximumPoint(), selection.getMinimumPoint())) {
+        if(Util.isLocationIgnoringYawPitch(selection.getMaximumPoint(), selection.getMinimumPoint())) {
             try {
                 WarpSign warpSign = null;
                 Warp w = null;
@@ -131,11 +132,5 @@ public class WarpSignCommand implements CommandExecutor {
 
 
         return false;
-    }
-
-    private boolean isLocationIgnoringYawPitch(Location location, Location equals) {
-        return location.getX() == equals.getX() &&
-                location.getY() == equals.getY() &&
-                location.getZ() == equals.getZ();
     }
 }

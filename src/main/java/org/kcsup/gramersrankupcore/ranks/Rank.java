@@ -1,10 +1,10 @@
 package org.kcsup.gramersrankupcore.ranks;
 
 public class Rank {
-    private String name;
-    private String prefix;
-    private String chatPrefix;
-    private int weight;
+    private final String name;
+    private final String prefix;
+    private final String chatPrefix;
+    private final int weight;
 
     public Rank(String name, String prefix, String chatPrefix, int weight) {
         this.name = name;

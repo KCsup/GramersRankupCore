@@ -11,7 +11,7 @@ import org.kcsup.gramersrankupcore.saves.Save;
 import java.util.List;
 
 public class SaveCommand implements CommandExecutor {
-    private Main main;
+    private final Main main;
 
     public SaveCommand(Main main) {
         this.main = main;
@@ -31,7 +31,7 @@ public class SaveCommand implements CommandExecutor {
             return false;
         }
 
-        if(main.getPracticeManager().isPracticing(player)) {
+        if(main.getPractice().isPracticing(player)) {
             player.sendMessage(ChatColor.RED + "You cannot create a save while in practice mode!");
             return false;
         }

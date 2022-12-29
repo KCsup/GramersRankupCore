@@ -5,10 +5,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class Menu {
-    private String name;
-    private int size;
-    private Inventory inventory;
-    private ItemStack item;
+    private final String name;
+    private final int size;
+    private final Inventory inventory;
+    private final ItemStack item;
 
     public Menu(String name, int size, Inventory inventory, ItemStack item) {
         this.name = name;

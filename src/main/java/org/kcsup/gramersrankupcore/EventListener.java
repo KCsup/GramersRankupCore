@@ -19,7 +19,7 @@ import org.kcsup.gramersrankupcore.signs.types.TutorialSign;
 import org.kcsup.gramersrankupcore.warps.Warp;
 
 public class EventListener implements Listener {
-    private Main main;
+    private final Main main;
 
     public EventListener(Main main) {
         this.main = main;
@@ -63,16 +63,16 @@ public class EventListener implements Listener {
             Bukkit.broadcastMessage(message);
         }
         main.getRankManager().initiatePlayerRank(player);
-        main.getScoreboardManager().reloadScoreboard();
+        main.getScoreboardUtil().reloadScoreboard();
 
         main.getMenuManager().playerMenuCheck(player);
-        main.getVisibilityManager().visibilityItemCheck(player);
-        main.getVisibilityManager().updateInvisible();
+        main.getVisibilityUtil().visibilityItemCheck(player);
+        main.getVisibilityUtil().updateInvisible();
     }
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
-        if(main.getPracticeManager().isPracticing(e.getPlayer())) main.getPracticeManager().setNotPracticing(e.getPlayer());
+        if(main.getPractice().isPracticing(e.getPlayer())) main.getPractice().setNotPracticing(e.getPlayer());
     }
 
     @EventHandler
@@ -86,14 +86,14 @@ public class EventListener implements Listener {
         }
 
         if(e.getItem() != null) {
-            if(e.getItem().equals(main.getPracticeManager().getPracticeItem()) && main.getPracticeManager().isPracticing(player)) {
-                Location location = main.getPracticeManager().getPlayerPracticeLocation(player);
+            if(e.getItem().equals(main.getPractice().getPracticeItem()) && main.getPractice().isPracticing(player)) {
+                Location location = main.getPractice().getPlayerPracticeLocation(player);
                 if(location != null) player.teleport(location);
                 return;
             }
 
-            if(e.getItem().equals(main.getVisibilityManager().getVisibilityItem(player))) {
-                main.getVisibilityManager().toggleVisibility(player);
+            if(e.getItem().equals(main.getVisibilityUtil().getVisibilityItem(player))) {
+                main.getVisibilityUtil().toggleVisibility(player);
             }
 
             for(Menu menu : main.getMenuManager().getCurrentMenus()) {
@@ -114,7 +114,7 @@ public class EventListener implements Listener {
             if(main.getSignManager().isSign(location)) {
                 e.setCancelled(true);
 
-                if(main.getPracticeManager().isPracticing(player)) {
+                if(main.getPractice().isPracticing(player)) {
                     player.sendMessage(ChatColor.RED + "You cannot use a warp sign while in practice mode!");
                     return;
                 }
@@ -188,7 +188,7 @@ public class EventListener implements Listener {
         if(e.getInventory().getTitle().equals("Ranks")) {
             e.setCancelled(true);
 
-            if(main.getPracticeManager().isPracticing(player)) {
+            if(main.getPractice().isPracticing(player)) {
                 player.sendMessage(ChatColor.RED + "You cannot use the ranks menu while in practice mode.");
                 player.closeInventory();
                 return;
@@ -230,7 +230,7 @@ public class EventListener implements Listener {
             if(e.getCurrentItem().getType().equals(Material.BOOK)) {
                 for(Save s : main.getSaveManager().getPlayerSaves(player)) {
                     if(e.getCurrentItem().getItemMeta().getDisplayName().equals(s.getName())) {
-                        if(main.getPracticeManager().isPracticing(player)) {
+                        if(main.getPractice().isPracticing(player)) {
                             player.closeInventory();
 
                             player.sendMessage(ChatColor.RED + "You cannot teleport to a save while you're in practice mode!");
@@ -250,13 +250,13 @@ public class EventListener implements Listener {
             return;
         }
 
-        if(e.getCurrentItem().equals(main.getPracticeManager().getPracticeItem()) &&
-                main.getPracticeManager().isPracticing(player)) {
+        if(e.getCurrentItem().equals(main.getPractice().getPracticeItem()) &&
+                main.getPractice().isPracticing(player)) {
             e.setCancelled(true);
             return;
         }
 
-        if(e.getCurrentItem().equals(main.getVisibilityManager().getVisibilityItem(player))) {
+        if(e.getCurrentItem().equals(main.getVisibilityUtil().getVisibilityItem(player))) {
             e.setCancelled(true);
             return;
         }
@@ -272,13 +272,13 @@ public class EventListener implements Listener {
 
         if(e.getItemDrop() == null) return;
 
-        if(e.getItemDrop().getItemStack().equals(main.getPracticeManager().getPracticeItem()) &&
-                main.getPracticeManager().isPracticing(player)) {
+        if(e.getItemDrop().getItemStack().equals(main.getPractice().getPracticeItem()) &&
+                main.getPractice().isPracticing(player)) {
             e.setCancelled(true);
             return;
         }
 
-        if(e.getItemDrop().getItemStack().equals(main.getVisibilityManager().getVisibilityItem(player))) {
+        if(e.getItemDrop().getItemStack().equals(main.getVisibilityUtil().getVisibilityItem(player))) {
             e.setCancelled(true);
             return;
         }

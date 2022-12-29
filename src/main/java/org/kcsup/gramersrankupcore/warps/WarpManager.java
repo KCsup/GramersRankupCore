@@ -7,6 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.kcsup.gramersrankupcore.Main;
+import org.kcsup.gramersrankupcore.util.Manager;
+import org.kcsup.gramersrankupcore.util.Util;
 
 import java.io.File;
 import java.io.FileReader;
@@ -15,32 +17,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WarpManager {
-    private Main main;
-    private File warpData;
+public class WarpManager extends Manager {
 
     public WarpManager(Main main) {
-        this.main = main;
-        filesCheck();
-    }
-
-    private void filesCheck() {
-        String warpDataPath = main.getDataFolder() + "/warpData.json";
-        warpData = new File(warpDataPath);
-        if(!warpData.exists()) {
-            try {
-                warpData.createNewFile();
-
-                JSONObject file = new JSONObject();
-                file.put("warps", new JSONArray());
-
-                FileWriter fileWriter = new FileWriter(warpDataPath);
-                fileWriter.write(file.toString());
-                fileWriter.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        super(
+                main,
+                "/warpData.json",
+                new JSONObject().put("warps", new JSONArray())
+        );
     }
 
     public Warp getWarp(String name) {
@@ -64,12 +48,12 @@ public class WarpManager {
     }
 
     public List<Warp> getCurrentWarps() {
-        if(warpData == null) return null;
+        if(dataFile == null) return null;
 
         List<Warp> currentWarps = new ArrayList<>();
 
         try {
-            FileReader fileReader = new FileReader(warpData);
+            FileReader fileReader = new FileReader(dataFile);
             JSONTokener jsonTokener = new JSONTokener(fileReader);
             JSONObject file = new JSONObject(jsonTokener);
             JSONArray warps = file.getJSONArray("warps");
@@ -90,10 +74,10 @@ public class WarpManager {
     }
 
     public void storeWarpInstance(Warp warp) {
-        if(warpData == null || warp == null) return;
+        if(dataFile == null || warp == null) return;
 
         try {
-            FileReader fileReader = new FileReader(warpData);
+            FileReader fileReader = new FileReader(dataFile);
             JSONTokener jsonTokener = new JSONTokener(fileReader);
             JSONObject file = new JSONObject(jsonTokener);
             JSONArray warps = file.getJSONArray("warps");
@@ -101,7 +85,7 @@ public class WarpManager {
             JSONObject warpJson = warpToJson(warp);
             warps.put(warpJson);
 
-            FileWriter fileWriter = new FileWriter(warpData);
+            FileWriter fileWriter = new FileWriter(dataFile);
             fileWriter.write(file.toString());
             fileWriter.flush();
         } catch (IOException e) {
@@ -115,7 +99,7 @@ public class WarpManager {
         JSONObject warpJson = new JSONObject();
         warpJson.put("name", warp.getName());
 
-        JSONObject locationJson = locationToJson(warp.getLocation());
+        JSONObject locationJson = Util.locationToJson(warp.getLocation());
         warpJson.put("location", locationJson);
 
         return warpJson;
@@ -125,35 +109,8 @@ public class WarpManager {
         if(jsonObject == null) return null;
 
         String name = jsonObject.getString("name");
-        Location location = jsonToLocation(jsonObject.getJSONObject("location"));
+        Location location = Util.jsonToLocation(jsonObject.getJSONObject("location"));
 
         return new Warp(name, location);
-    }
-
-    private JSONObject locationToJson(Location location) {
-        if(location == null) return null;
-
-        JSONObject locationJson = new JSONObject();
-        locationJson.put("world", location.getWorld().getName());
-        locationJson.put("x", location.getX());
-        locationJson.put("y", location.getY());
-        locationJson.put("z", location.getZ());
-        locationJson.put("yaw", location.getYaw());
-        locationJson.put("pitch", location.getPitch());
-
-        return locationJson;
-    }
-
-    private Location jsonToLocation(JSONObject jsonObject) {
-        if(jsonObject == null) return null;
-
-        World world = Bukkit.getWorld(jsonObject.getString("world"));
-        double x = jsonObject.getDouble("x");
-        double y = jsonObject.getDouble("y");
-        double z = jsonObject.getDouble("z");
-        float yaw = jsonObject.getFloat("yaw");
-        float pitch = jsonObject.getFloat("pitch");
-
-        return new Location(world, x, y, z, yaw, pitch);
     }
 }

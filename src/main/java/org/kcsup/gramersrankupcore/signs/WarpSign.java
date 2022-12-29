@@ -6,8 +6,8 @@ import org.bukkit.Material;
 import org.bukkit.block.Sign;
 
 public class WarpSign {
-    private Location location;
-    private Location warp;
+    private final Location location;
+    private final Location warp;
     private String[] lines = new String[4];
     private Sign sign;
 

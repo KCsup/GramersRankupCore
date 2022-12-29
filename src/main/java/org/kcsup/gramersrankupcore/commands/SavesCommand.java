@@ -16,7 +16,7 @@ import org.kcsup.gramersrankupcore.saves.Save;
 import java.util.List;
 
 public class SavesCommand implements CommandExecutor {
-    private Main main;
+    private final Main main;
 
     public SavesCommand(Main main) {
         this.main = main;

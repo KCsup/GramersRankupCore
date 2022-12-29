@@ -3,8 +3,8 @@ package org.kcsup.gramersrankupcore.saves;
 import org.bukkit.Location;
 
 public class Save {
-    private String name;
-    private Location location;
+    private final String name;
+    private final Location location;
 
     public Save(String name, Location location) {
         this.name = name;

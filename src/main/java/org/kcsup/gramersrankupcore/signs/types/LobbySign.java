@@ -5,7 +5,7 @@ import org.kcsup.gramersrankupcore.ranks.Rank;
 import org.kcsup.gramersrankupcore.signs.WarpSign;
 
 public class LobbySign extends WarpSign {
-    private Rank requiredRank;
+    private final Rank requiredRank;
 
     public LobbySign(Location location, Location warp, Rank requiredRank) {
         super(location, warp);

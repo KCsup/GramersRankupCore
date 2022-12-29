@@ -3,8 +3,8 @@ package org.kcsup.gramersrankupcore.warps;
 import org.bukkit.Location;
 
 public class Warp {
-    private String name;
-    private Location location;
+    private final String name;
+    private final Location location;
 
     public Warp(String name, Location location) {
         this.name = name;

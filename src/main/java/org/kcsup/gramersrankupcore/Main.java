@@ -6,23 +6,23 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.kcsup.gramersrankupcore.commands.*;
 import org.kcsup.gramersrankupcore.menu.MenuManager;
-import org.kcsup.gramersrankupcore.practice.PracticeManager;
+import org.kcsup.gramersrankupcore.practice.Practice;
 import org.kcsup.gramersrankupcore.ranks.RankManager;
 import org.kcsup.gramersrankupcore.saves.SaveManager;
 import org.kcsup.gramersrankupcore.signs.SignManager;
-import org.kcsup.gramersrankupcore.teams.ScoreboardManager;
-import org.kcsup.gramersrankupcore.visibility.VisibilityManager;
+import org.kcsup.gramersrankupcore.teams.ScoreboardUtil;
+import org.kcsup.gramersrankupcore.visibility.VisibilityUtil;
 import org.kcsup.gramersrankupcore.warps.WarpManager;
 
 public final class Main extends JavaPlugin {
     private RankManager rankManager;
-    private ScoreboardManager scoreboardManager;
-    private PracticeManager practiceManager;
+    private ScoreboardUtil scoreboardUtil;
+    private Practice practice;
     private SignManager signManager;
     private SaveManager saveManager;
     private MenuManager menuManager;
     private WarpManager warpManager;
-    private VisibilityManager visibilityManager;
+    private VisibilityUtil visibilityUtil;
 
     private WorldEditPlugin worldEditPlugin;
 
@@ -33,16 +33,16 @@ public final class Main extends JavaPlugin {
         saveDefaultConfig();
 
         rankManager = new RankManager(this);
-        scoreboardManager = new ScoreboardManager(this);
-        practiceManager = new PracticeManager(this);
+        scoreboardUtil = new ScoreboardUtil(this);
+        practice = new Practice(this);
         signManager = new SignManager(this);
         saveManager = new SaveManager(this);
         menuManager = new MenuManager(this);
         warpManager = new WarpManager(this);
-        visibilityManager = new VisibilityManager(this);
+        visibilityUtil = new VisibilityUtil(this);
 
         rankManager.initiateAllPlayerRanks();
-        scoreboardManager.reloadScoreboard();
+        scoreboardUtil.reloadScoreboard();
         signManager.reloadAllSigns();
 
         Bukkit.getPluginManager().registerEvents(new EventListener(this), this);
@@ -86,12 +86,12 @@ public final class Main extends JavaPlugin {
         return rankManager;
     }
 
-    public ScoreboardManager getScoreboardManager() {
-        return scoreboardManager;
+    public ScoreboardUtil getScoreboardUtil() {
+        return scoreboardUtil;
     }
 
-    public PracticeManager getPracticeManager() {
-        return practiceManager;
+    public Practice getPractice() {
+        return practice;
     }
 
     public SignManager getSignManager() {
@@ -110,7 +110,7 @@ public final class Main extends JavaPlugin {
         return warpManager;
     }
 
-    public VisibilityManager getVisibilityManager() { return visibilityManager; }
+    public VisibilityUtil getVisibilityUtil() { return visibilityUtil; }
 
     public WorldEditPlugin getWorldEditPlugin() {
         return worldEditPlugin;
@@ -119,7 +119,7 @@ public final class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        practiceManager.setAllNotPracticing();
-        visibilityManager.purgeInvisible();
+        practice.setAllNotPracticing();
+        visibilityUtil.purgeInvisible();
     }
 }

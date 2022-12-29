@@ -15,5 +15,5 @@ visibility-on-item-name: "sugar"
 visibility-off-item-name: "glowstone dust"
 visibility-item-slot: 7
 
-# Beta
+# Before Release
 rank-limit: 3

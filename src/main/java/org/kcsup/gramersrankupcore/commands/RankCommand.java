@@ -10,7 +10,7 @@ import org.kcsup.gramersrankupcore.Main;
 import org.kcsup.gramersrankupcore.ranks.Rank;
 
 public class RankCommand implements CommandExecutor {
-    private Main main;
+    private final Main main;
 
     public RankCommand(Main main) {
         this.main = main;

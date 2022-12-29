@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.kcsup.gramersrankupcore.Main;
 
 public class PracticeCommand implements CommandExecutor {
-    private Main main;
+    private final Main main;
 
     public PracticeCommand(Main main) {
         this.main = main;
@@ -22,8 +22,8 @@ public class PracticeCommand implements CommandExecutor {
         }
 
         Player player = (Player) sender;
-        if(!main.getPracticeManager().isPracticing(player)) {
-            main.getPracticeManager().setPracticing(player);
+        if(!main.getPractice().isPracticing(player)) {
+            main.getPractice().setPracticing(player);
             player.sendMessage(ChatColor.GREEN + "Entered practice mode!");
         } else {
             player.sendMessage(ChatColor.RED + "You are already in practice mode!");

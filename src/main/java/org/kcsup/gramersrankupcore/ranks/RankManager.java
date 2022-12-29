@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.kcsup.gramersrankupcore.Main;
+import org.kcsup.gramersrankupcore.util.Manager;
 
 import java.io.File;
 import java.io.FileReader;
@@ -13,38 +14,21 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
-public class RankManager {
-    private Main main;
-    private File ranksFolder;
-    private File rankData;
+public class RankManager extends Manager {
+
+    private final File ranksFolder;
 
     public RankManager(Main main) {
-        this.main = main;
-        filesCheck();
-    }
+        super(
+                main,
+                "/rankData.json",
+                new JSONObject().put("players", new JSONArray())
+        );
 
-    private void filesCheck() {
         String rankFolderPath = main.getDataFolder() + "/ranks";
         ranksFolder = new File(rankFolderPath);
         if(!ranksFolder.exists()) {
             ranksFolder.mkdir();
-        }
-
-        String rankDataPath = main.getDataFolder() + "/rankData.json";
-        rankData = new File(rankDataPath);
-        if(!rankData.exists()) {
-            try {
-                rankData.createNewFile();
-
-                JSONObject fileObject = new JSONObject();
-                fileObject.put("players", new JSONArray());
-
-                FileWriter fileWriter = new FileWriter(rankDataPath);
-                fileWriter.write(fileObject.toString());
-                fileWriter.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -146,10 +130,10 @@ public class RankManager {
     public Rank getPlayerRank(Player player) {
         UUID uuid = player.getUniqueId();
 
-        if(rankData == null) return null;
+        if(dataFile == null) return null;
 
         try {
-            FileReader fileReader = new FileReader(rankData);
+            FileReader fileReader = new FileReader(dataFile);
             JSONTokener jsonTokener = new JSONTokener(fileReader);
             JSONObject rankJson = new JSONObject(jsonTokener);
             JSONArray rankDataArray = rankJson.getJSONArray("players");
@@ -168,10 +152,10 @@ public class RankManager {
     public void setPlayerRank(Player player, Rank rank){
         UUID uuid = player.getUniqueId();
 
-        if(rankData == null) return;
+        if(dataFile == null) return;
 
         try {
-            FileReader fileReader = new FileReader(rankData);
+            FileReader fileReader = new FileReader(dataFile);
             JSONTokener jsonTokener = new JSONTokener(fileReader);
             JSONObject rankJson = new JSONObject(jsonTokener);
             JSONArray rankDataArray = rankJson.getJSONArray("players");
@@ -181,14 +165,14 @@ public class RankManager {
                 if (jsonObject.getString("uuid").equals(uuid.toString())) {
                     jsonObject.put("rank", rank.getName());
 
-                    FileWriter fileWriter = new FileWriter(rankData);
+                    FileWriter fileWriter = new FileWriter(dataFile);
                     fileWriter.write(rankJson.toString());
                     fileWriter.flush();
 
                     break;
                 }
             }
-            main.getScoreboardManager().reloadScoreboard();
+            main.getScoreboardUtil().reloadScoreboard();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -205,10 +189,10 @@ public class RankManager {
 
         UUID uuid = player.getUniqueId();
 
-        if(rankData == null) return;
+        if(dataFile == null) return;
 
         try {
-            FileReader fileReader = new FileReader(rankData);
+            FileReader fileReader = new FileReader(dataFile);
             JSONTokener jsonTokener = new JSONTokener(fileReader);
             JSONObject rankJson = new JSONObject(jsonTokener);
             JSONArray rankDataArray = rankJson.getJSONArray("players");
@@ -220,11 +204,11 @@ public class RankManager {
             playerObject.put("rank", getDefaultRank().getName());
             rankDataArray.put(playerObject);
 
-            FileWriter fileWriter = new FileWriter(rankData);
+            FileWriter fileWriter = new FileWriter(dataFile);
             fileWriter.write(rankJson.toString());
             fileWriter.flush();
 
-            main.getScoreboardManager().reloadScoreboard();
+            main.getScoreboardUtil().reloadScoreboard();
         } catch (IOException e) {
             e.printStackTrace();
         }

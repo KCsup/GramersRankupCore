@@ -12,7 +12,7 @@ import org.kcsup.gramersrankupcore.Main;
 import org.kcsup.gramersrankupcore.warps.Warp;
 
 public class WarpCreateCommand implements CommandExecutor {
-    private Main main;
+    private final Main main;
 
     public WarpCreateCommand(Main main) {
         this.main = main;

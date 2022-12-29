@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.kcsup.gramersrankupcore.Main;
 
 public class UnpracticeCommand implements CommandExecutor {
-    private Main main;
+    private final Main main;
 
     public UnpracticeCommand(Main main) {
         this.main = main;
@@ -22,8 +22,8 @@ public class UnpracticeCommand implements CommandExecutor {
         }
 
         Player player = (Player) sender;
-        if(main.getPracticeManager().isPracticing(player)) {
-            main.getPracticeManager().setNotPracticing(player);
+        if(main.getPractice().isPracticing(player)) {
+            main.getPractice().setNotPracticing(player);
             player.sendMessage(ChatColor.GREEN + "Exited practice mode!");
         } else {
             player.sendMessage(ChatColor.RED + "You aren't currently in practice mode!");

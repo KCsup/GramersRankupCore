@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.kcsup.gramersrankupcore.Main;
 
 public class LobbyCommand implements CommandExecutor {
-    private Main main;
+    private final Main main;
 
     public LobbyCommand(Main main) {
         this.main = main;
@@ -24,6 +24,7 @@ public class LobbyCommand implements CommandExecutor {
         Player player = (Player) sender;
 
         if(player.getWorld().getSpawnLocation() != null) player.teleport(player.getWorld().getSpawnLocation());
+        // TODO: Make lobby location in config
 
         return false;
     }
