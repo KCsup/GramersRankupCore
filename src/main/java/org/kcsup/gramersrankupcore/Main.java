@@ -121,5 +121,6 @@ public final class Main extends JavaPlugin {
         // Plugin shutdown logic
         practice.setAllNotPracticing();
         visibilityUtil.purgeInvisible();
+        signManager.clearCooldown();
     }
 }

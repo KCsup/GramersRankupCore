@@ -113,6 +113,7 @@ public class EventListener implements Listener {
             Location location = e.getClickedBlock().getLocation();
             if(main.getSignManager().isSign(location)) {
                 e.setCancelled(true);
+                player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 1);
 
                 if(main.getPractice().isPracticing(player)) {
                     player.sendMessage(ChatColor.RED + "You cannot use a warp sign while in practice mode!");
@@ -144,8 +145,16 @@ public class EventListener implements Listener {
                         return;
                     }
                 } else if(warpSign instanceof TutorialSign) {
+                    if(main.getSignManager().isOnCooldown(player)) {
+                        player.sendMessage(ChatColor.RED + "You must wait 3 seconds before using a sign again!");
+                        return;
+                    }
+
                     TutorialSign tutorialSign = (TutorialSign) warpSign;
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', tutorialSign.getMessage()));
+
+                    main.getSignManager().addCooldown(player);
+                    Bukkit.getScheduler().runTaskLaterAsynchronously(main, () -> main.getSignManager().removeCooldown(player), 3000);
                     return;
                 }
                 player.teleport(warpSign.getWarp());

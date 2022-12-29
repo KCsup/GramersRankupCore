@@ -1,6 +1,7 @@
 package org.kcsup.gramersrankupcore.signs;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -21,13 +22,35 @@ import java.util.List;
 
 public class SignManager extends Manager {
 
+    private final List<Player> signCooldown;
+
     public SignManager(Main main) {
         super(
                 main,
                 "/signData.json",
                 new JSONObject().put("signs", new JSONArray())
         );
+
+        signCooldown = new ArrayList<>();
     }
+
+    public boolean isOnCooldown(Player player) {
+        return signCooldown.contains(player);
+    }
+
+    public void addCooldown(Player player) {
+        if(!isOnCooldown(player)) signCooldown.add(player);
+    }
+
+    public void removeCooldown(Player player) {
+        signCooldown.remove(player);
+    }
+
+    public void clearCooldown() {
+        for(Player p : signCooldown) removeCooldown(p);
+    }
+
+    // TODO: further test cooldown, not working IG
 
     public void storeSignInstance(WarpSign warpSign) {
         if(dataFile == null || warpSign == null) return;
