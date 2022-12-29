@@ -1,6 +1,5 @@
 package org.kcsup.gramersrankupcore.util;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.kcsup.gramersrankupcore.Main;
 

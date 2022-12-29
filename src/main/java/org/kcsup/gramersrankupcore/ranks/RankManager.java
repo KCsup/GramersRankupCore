@@ -17,6 +17,7 @@ import java.util.*;
 public class RankManager extends Manager {
 
     private final File ranksFolder;
+    private final List<Rank> currentRanks;
 
     public RankManager(Main main) {
         super(
@@ -30,25 +31,20 @@ public class RankManager extends Manager {
         if(!ranksFolder.exists()) {
             ranksFolder.mkdir();
         }
-    }
 
-    public List<Rank> getCurrentRanks() {
-        List<Rank> currentRanks = new ArrayList<>();
-
-        if(main == null) return null;
-
-        if(ranksFolder.listFiles() == null) return null;
+        currentRanks = new ArrayList<>();
         for(File file: Objects.requireNonNull(ranksFolder.listFiles())) {
             Rank rank = fileToRank(file);
             if(rank != null) currentRanks.add(rank);
         }
+    }
 
-        if(!currentRanks.isEmpty()) return currentRanks;
-        else return null;
+    public List<Rank> getCurrentRanks() {
+        return currentRanks;
     }
 
     public List<Rank> getCurrentRanksSorted() {
-        List<Rank> sortedCurrentRanks = new ArrayList<>(getCurrentRanks());
+        List<Rank> sortedCurrentRanks = new ArrayList<>(currentRanks);
         Comparator<Rank> compareByWeight = Comparator.comparingInt(Rank::getWeight);
         sortedCurrentRanks.sort(compareByWeight.reversed());
 
@@ -56,7 +52,7 @@ public class RankManager extends Manager {
     }
 
     public List<Rank> getCurrentRanksSortedReversed() {
-        List<Rank> sortedCurrentRanks = new ArrayList<>(getCurrentRanks());
+        List<Rank> sortedCurrentRanks = new ArrayList<>(currentRanks);
         Comparator<Rank> compareByWeight = Comparator.comparingInt(Rank::getWeight);
         sortedCurrentRanks.sort(compareByWeight);
 
@@ -74,24 +70,9 @@ public class RankManager extends Manager {
 
                 String name = jsonRank.getString("name");
 
-                String prefix = jsonRank.getString("prefix");
-                char[] prefixChars = prefix.toCharArray();
-                for(char c : prefixChars) {
-                    String unicode = "\\u" + Integer.toHexString(c | 0x10000).substring(1);
-                    if(unicode.equals("\\u00c2")) {
-                        prefix = prefix.replace(String.valueOf(c), "");
-                    }
-                }
-                if(prefix.length() > 16) prefix = null;
+                String prefix = removeExtraCharacters(jsonRank.getString("prefix"));
 
-                String chatPrefix = jsonRank.getString("chat");
-                char[] chatChars = chatPrefix.toCharArray();
-                for(char c : chatChars) {
-                    String unicode = "\\u" + Integer.toHexString(c | 0x10000).substring(1);
-                    if(unicode.equals("\\u00c2")) {
-                        chatPrefix = chatPrefix.replace(String.valueOf(c), "");
-                    }
-                }
+                String chatPrefix = removeExtraCharacters(jsonRank.getString("chat"));
 
                 int weight = jsonRank.getInt("weight");
 
@@ -103,10 +84,23 @@ public class RankManager extends Manager {
         return null;
     }
 
-    public Rank getRank(String name) {
-        if(getCurrentRanks() == null) return null;
+    private String removeExtraCharacters(String original) {
+        String out = original;
+        char[] chatChars = out.toCharArray();
+        for(char c : chatChars) {
+            String unicode = "\\u" + Integer.toHexString(c | 0x10000).substring(1);
+            if(unicode.equals("\\u00c2")) {
+                out = out.replace(String.valueOf(c), "");
+            }
+        }
 
-        for(Rank rank : getCurrentRanks()) {
+        return out;
+    }
+
+    public Rank getRank(String name) {
+        if(currentRanks.isEmpty()) return null;
+
+        for(Rank rank : currentRanks) {
             if(name.equals(rank.getName())) return rank;
         }
 
@@ -114,9 +108,9 @@ public class RankManager extends Manager {
     }
 
     public Rank getRank(int weight) {
-        if(getCurrentRanks() == null) return null;
+        if(currentRanks == null) return null;
 
-        for(Rank rank : getCurrentRanks()) {
+        for(Rank rank : currentRanks) {
             if(weight == rank.getWeight()) return rank;
         }
 

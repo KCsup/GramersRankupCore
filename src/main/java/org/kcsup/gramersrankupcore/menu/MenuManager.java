@@ -15,7 +15,6 @@ import org.kcsup.gramersrankupcore.ranks.Rank;
 import org.kcsup.gramersrankupcore.util.Manager;
 import org.kcsup.gramersrankupcore.util.Pair;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
