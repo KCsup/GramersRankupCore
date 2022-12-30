@@ -2,7 +2,9 @@ package org.kcsup.gramersrankupcore.util;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.json.JSONObject;
 
 public class Util {
@@ -38,5 +40,11 @@ public class Util {
         return location.getX() == equals.getX() &&
                 location.getY() == equals.getY() &&
                 location.getZ() == equals.getZ();
+    }
+
+    public static void updatedTeleport(Player player, Location location) {
+        player.teleport(location);
+        player.playSound(player.getLocation(), Sound.ENDERMAN_TELEPORT, 1, 1);
+        if(!location.getChunk().isLoaded()) location.getChunk().load();
     }
 }

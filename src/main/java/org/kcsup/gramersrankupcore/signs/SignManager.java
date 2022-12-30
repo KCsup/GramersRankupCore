@@ -50,8 +50,6 @@ public class SignManager extends Manager {
         for(Player p : signCooldown) removeCooldown(p);
     }
 
-    // TODO: further test cooldown, not working IG
-
     public void storeSignInstance(WarpSign warpSign) {
         if(dataFile == null || warpSign == null) return;
 

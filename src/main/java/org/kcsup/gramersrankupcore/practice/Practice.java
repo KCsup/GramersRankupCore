@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.kcsup.gramersrankupcore.Main;
+import org.kcsup.gramersrankupcore.util.Util;
 
 import java.util.HashMap;
 
@@ -58,7 +59,7 @@ public class Practice {
     public void setNotPracticing(Player player) {
         if(isPracticing(player)) {
             Location location = getPlayerPracticeLocation(player);
-            if(location != null) player.teleport(location);
+            if(location != null) Util.updatedTeleport(player, location);
             practicing.remove(player);
             if(player.getInventory().getItem(getPracticeItemSlot()) != null) player.getInventory().setItem(getPracticeItemSlot(), null);
         }

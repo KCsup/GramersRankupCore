@@ -6,6 +6,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.kcsup.gramersrankupcore.Main;
+import org.kcsup.gramersrankupcore.util.Util;
+import org.kcsup.gramersrankupcore.warps.Warp;
 
 public class LobbyCommand implements CommandExecutor {
     private final Main main;
@@ -22,9 +24,9 @@ public class LobbyCommand implements CommandExecutor {
         }
 
         Player player = (Player) sender;
-
-        if(player.getWorld().getSpawnLocation() != null) player.teleport(player.getWorld().getSpawnLocation());
-        // TODO: Make lobby location in config
+        Warp mainLobby = main.getWarpManager().getWarp("Main_Lobby");
+        if(mainLobby != null)
+            Util.updatedTeleport(player, mainLobby.getLocation());
 
         return false;
     }

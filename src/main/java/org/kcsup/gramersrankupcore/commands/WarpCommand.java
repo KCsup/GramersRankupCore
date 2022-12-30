@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.kcsup.gramersrankupcore.Main;
+import org.kcsup.gramersrankupcore.util.Util;
 import org.kcsup.gramersrankupcore.warps.Warp;
 
 public class WarpCommand implements CommandExecutor {
@@ -41,7 +42,7 @@ public class WarpCommand implements CommandExecutor {
         }
 
         player.sendMessage(ChatColor.GREEN + "Teleporting to warp: " + warp.getName());
-        player.teleport(warp.getLocation());
+        Util.updatedTeleport(player, warp.getLocation());
 
         return false;
     }

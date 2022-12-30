@@ -28,7 +28,6 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
         getConfig().options().copyDefaults();
         saveDefaultConfig();
 
@@ -118,7 +117,6 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
         practice.setAllNotPracticing();
         visibilityUtil.purgeInvisible();
         signManager.clearCooldown();

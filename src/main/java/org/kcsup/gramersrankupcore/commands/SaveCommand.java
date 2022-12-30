@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.kcsup.gramersrankupcore.Main;
 import org.kcsup.gramersrankupcore.saves.Save;
+import org.kcsup.gramersrankupcore.util.Util;
 
 import java.util.List;
 
@@ -65,7 +66,8 @@ public class SaveCommand implements CommandExecutor {
         Save save = new Save(name.toString(), player.getLocation());
         main.getSaveManager().storeSaveInstance(player, save);
         player.sendMessage(ChatColor.GREEN + "Saved you current location to the save: " + name);
-        player.teleport(player.getWorld().getSpawnLocation());
+        Util.updatedTeleport(player, player.getWorld().getSpawnLocation());
+        // TODO: Change to config lobby location
 
         return false;
     }
