@@ -1,4 +1,4 @@
-package org.kcsup.gramersrankupcore.commands;
+package org.kcsup.gramersrankupcore.commands.admin;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

@@ -25,8 +25,10 @@ public class PracticeCommand implements CommandExecutor {
         if(!main.getPractice().isPracticing(player)) {
             main.getPractice().setPracticing(player);
             player.sendMessage(ChatColor.GREEN + "Entered practice mode!");
-        } else {
-            player.sendMessage(ChatColor.RED + "You are already in practice mode!");
+        }
+        else {
+            main.getPractice().setNotPracticing(player);
+            player.sendMessage(ChatColor.GREEN + "Exited practice mode!");
         }
 
         return false;

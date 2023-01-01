@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.kcsup.gramersrankupcore.commands.*;
+import org.kcsup.gramersrankupcore.commands.admin.*;
 import org.kcsup.gramersrankupcore.menu.MenuManager;
 import org.kcsup.gramersrankupcore.practice.Practice;
 import org.kcsup.gramersrankupcore.ranks.RankManager;

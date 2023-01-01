@@ -1,4 +1,4 @@
-package org.kcsup.gramersrankupcore.commands;
+package org.kcsup.gramersrankupcore.commands.admin;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.Selection;
