@@ -4,14 +4,10 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.kcsup.gramersrankupcore.Main;
 import org.kcsup.gramersrankupcore.util.Manager;
 import org.kcsup.gramersrankupcore.util.Util;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -37,139 +33,116 @@ public class SaveManager extends Manager {
     }
 
     public List<Save> getPlayerSaves(Player player) {
+        JSONObject file = getDataFile();
+
+        if(file == null) return null;
+
         List<Save> saves = new ArrayList<>();
 
         UUID uuid = player.getUniqueId();
 
-        if(dataFile == null) return null;
 
-        try {
-            FileReader fileReader = new FileReader(dataFile);
-            JSONTokener jsonTokener = new JSONTokener(fileReader);
-            JSONObject file = new JSONObject(jsonTokener);
-            JSONArray players = file.getJSONArray("players");
+        JSONArray players = file.getJSONArray("players");
 
-            for(Object o : players) {
-                JSONObject jsonObject = (JSONObject) o;
-                if(jsonObject.getString("uuid").equals(uuid.toString())) {
-                    JSONArray jsonSaves = jsonObject.getJSONArray("saves");
-                    for(Object saveObject : jsonSaves) {
-                        JSONObject save = (JSONObject) saveObject;
-                        saves.add(jsonToSave(save));
-                    }
-                    break;
+        for(Object o : players) {
+            JSONObject jsonObject = (JSONObject) o;
+            if(jsonObject.getString("uuid").equals(uuid.toString())) {
+                JSONArray jsonSaves = jsonObject.getJSONArray("saves");
+                for(Object saveObject : jsonSaves) {
+                    JSONObject save = (JSONObject) saveObject;
+                    saves.add(jsonToSave(save));
                 }
+                break;
             }
-
-            if(!saves.isEmpty()) return saves;
-            else return null;
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        return null;
+
+        if(!saves.isEmpty()) return saves;
+        else return null;
     }
 
     public void removeSaveInstance(Player player, Save save) {
+        JSONObject file = getDataFile();
+
+        if(file == null || save == null) return;
+
         UUID uuid = player.getUniqueId();
 
-        if(dataFile == null || save == null) return;
 
-        try {
-            FileReader fileReader = new FileReader(dataFile);
-            JSONTokener jsonTokener = new JSONTokener(fileReader);
-            JSONObject file = new JSONObject(jsonTokener);
-            JSONArray players = file.getJSONArray("players");
+        JSONArray players = file.getJSONArray("players");
 
-            for(Object o : players) {
-                JSONObject jsonObject = (JSONObject) o;
-                if(jsonObject.getString("uuid").equals(uuid.toString())) {
-                    JSONArray savesArray = jsonObject.getJSONArray("saves");
-                    for(int i = 0; i < savesArray.length(); i++) {
-                        JSONObject saveJson = savesArray.getJSONObject(i);
-                        Save s = jsonToSave(saveJson);
+        for(Object o : players) {
+            JSONObject jsonObject = (JSONObject) o;
+            if(jsonObject.getString("uuid").equals(uuid.toString())) {
+                JSONArray savesArray = jsonObject.getJSONArray("saves");
+                for(int i = 0; i < savesArray.length(); i++) {
+                    JSONObject saveJson = savesArray.getJSONObject(i);
+                    Save s = jsonToSave(saveJson);
 
-                        if(s.getName().equals(save.getName())) {
-                            savesArray.remove(i);
+                    if(s.getName().equals(save.getName())) {
+                        savesArray.remove(i);
+                        break;
+                    }
+                }
+                jsonObject.put("saves", savesArray);
+
+                if(savesArray.isEmpty()) {
+                    for(int i = 0; i < players.length(); i++) {
+                        if(players.get(i) == o) {
+                            players.remove(i);
                             break;
                         }
                     }
-                    jsonObject.put("saves", savesArray);
-
-                    if(savesArray.isEmpty()) {
-                        for(int i = 0; i < players.length(); i++) {
-                            if(players.get(i) == o) {
-                                players.remove(i);
-                                break;
-                            }
-                        }
-                    }
-                    file.put("players", players);
-
-                    FileWriter fileWriter = new FileWriter(dataFile);
-                    fileWriter.write(file.toString());
-                    fileWriter.flush();
-
-                    return;
                 }
+                file.put("players", players);
+
+                updateDataFile(file);
+
+                break;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
     public void storeSaveInstance(Player player, Save save) {
-        UUID uuid = player.getUniqueId();
+        JSONObject file = getDataFile();
 
-        if(dataFile == null || save == null) return;
+        if(file == null || save == null) return;
+
+        UUID uuid = player.getUniqueId();
 
         if(getPlayerSaves(player) == null) {
             initiatePlayerSaves(player);
         }
 
-        try {
-            FileReader fileReader = new FileReader(dataFile);
-            JSONTokener jsonTokener = new JSONTokener(fileReader);
-            JSONObject file = new JSONObject(jsonTokener);
-            JSONArray players = file.getJSONArray("players");
+        JSONArray players = file.getJSONArray("players");
 
-            for(Object o : players) {
-                JSONObject jsonObject = (JSONObject) o;
-                if(jsonObject.getString("uuid").equals(uuid.toString())) {
-                    JSONArray saves = jsonObject.getJSONArray("saves");
-                    saves.put(saveToJson(save));
+        for(Object o : players) {
+            JSONObject jsonObject = (JSONObject) o;
+            if(jsonObject.getString("uuid").equals(uuid.toString())) {
+                JSONArray saves = jsonObject.getJSONArray("saves");
+                saves.put(saveToJson(save));
 
-                    FileWriter fileWriter = new FileWriter(dataFile);
-                    fileWriter.write(file.toString());
-                    fileWriter.flush();
+                updateDataFile(file);
 
-                    return;
-                }
+                break;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
     public void initiatePlayerSaves(Player player) {
+        JSONObject file = getDataFile();
+
+        if(file == null) return;
+
         UUID uuid = player.getUniqueId();
 
-        try {
-            FileReader fileReader = new FileReader(dataFile);
-            JSONTokener jsonTokener = new JSONTokener(fileReader);
-            JSONObject file = new JSONObject(jsonTokener);
-            JSONArray players = file.getJSONArray("players");
+        JSONArray players = file.getJSONArray("players");
 
-            JSONObject playerObject = new JSONObject();
-            playerObject.put("uuid", uuid.toString());
-            playerObject.put("saves", new JSONArray());
-            players.put(playerObject);
+        JSONObject playerObject = new JSONObject();
+        playerObject.put("uuid", uuid.toString());
+        playerObject.put("saves", new JSONArray());
+        players.put(playerObject);
 
-            FileWriter fileWriter = new FileWriter(dataFile);
-            fileWriter.write(file.toString());
-            fileWriter.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        updateDataFile(file);
     }
 
     private JSONObject saveToJson(Save save) {

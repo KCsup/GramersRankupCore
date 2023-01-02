@@ -3,14 +3,10 @@ package org.kcsup.gramersrankupcore.warps;
 import org.bukkit.Location;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.kcsup.gramersrankupcore.Main;
 import org.kcsup.gramersrankupcore.util.Manager;
 import org.kcsup.gramersrankupcore.util.Util;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,49 +41,36 @@ public class WarpManager extends Manager {
     }
 
     public List<Warp> getCurrentWarps() {
-        if(dataFile == null) return null;
+        JSONObject file = getDataFile();
+
+        if(file == null) return null;
 
         List<Warp> currentWarps = new ArrayList<>();
 
-        try {
-            FileReader fileReader = new FileReader(dataFile);
-            JSONTokener jsonTokener = new JSONTokener(fileReader);
-            JSONObject file = new JSONObject(jsonTokener);
-            JSONArray warps = file.getJSONArray("warps");
+        JSONArray warps = file.getJSONArray("warps");
 
-            for(Object o : warps) {
-                JSONObject warpJson = (JSONObject) o;
-                Warp warp = jsonToWarp(warpJson);
+        for(Object o : warps) {
+            JSONObject warpJson = (JSONObject) o;
+            Warp warp = jsonToWarp(warpJson);
 
-                if(warp != null) currentWarps.add(warp);
-            }
-
-            if(!currentWarps.isEmpty()) return currentWarps;
-            else return null;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            if(warp != null) currentWarps.add(warp);
         }
+
+        if(!currentWarps.isEmpty()) return currentWarps;
+        else return null;
     }
 
     public void storeWarpInstance(Warp warp) {
-        if(dataFile == null || warp == null) return;
+        JSONObject file = getDataFile();
 
-        try {
-            FileReader fileReader = new FileReader(dataFile);
-            JSONTokener jsonTokener = new JSONTokener(fileReader);
-            JSONObject file = new JSONObject(jsonTokener);
-            JSONArray warps = file.getJSONArray("warps");
+        if(file == null || warp == null) return;
 
-            JSONObject warpJson = warpToJson(warp);
-            warps.put(warpJson);
+        JSONArray warps = file.getJSONArray("warps");
 
-            FileWriter fileWriter = new FileWriter(dataFile);
-            fileWriter.write(file.toString());
-            fileWriter.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        JSONObject warpJson = warpToJson(warp);
+        warps.put(warpJson);
+
+        updateDataFile(file);
     }
 
     private JSONObject warpToJson(Warp warp) {

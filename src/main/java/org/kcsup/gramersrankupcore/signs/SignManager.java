@@ -4,7 +4,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.kcsup.gramersrankupcore.Main;
 import org.kcsup.gramersrankupcore.ranks.Rank;
 import org.kcsup.gramersrankupcore.signs.types.LobbySign;
@@ -14,9 +13,6 @@ import org.kcsup.gramersrankupcore.util.Manager;
 import org.kcsup.gramersrankupcore.util.Util;
 import org.kcsup.gramersrankupcore.warps.Warp;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,61 +47,53 @@ public class SignManager extends Manager {
     }
 
     public void storeSignInstance(WarpSign warpSign) {
-        if(dataFile == null || warpSign == null) return;
+        JSONObject file = getDataFile();
 
-        try {
-            FileReader fileReader = new FileReader(dataFile);
-            JSONTokener jsonTokener = new JSONTokener(fileReader);
-            JSONObject file = new JSONObject(jsonTokener);
-            JSONArray signs = file.getJSONArray("signs");
+        if(file == null || warpSign == null) return;
 
-            JSONObject sign = new JSONObject();
-            sign.put("type", warpSign.getType());
+        JSONArray signs = file.getJSONArray("signs");
 
-            JSONObject signInfo = new JSONObject();
+        JSONObject sign = new JSONObject();
+        sign.put("type", warpSign.getType());
 
-            Location location = warpSign.getLocation();
-            JSONObject locationJson = Util.locationToJson(location);
-            signInfo.put("location", locationJson);
+        JSONObject signInfo = new JSONObject();
 
-            Location warp = warpSign.getWarp();
-            if(warp == null) signInfo.put("warp", JSONObject.NULL);
-            else {
-                JSONObject warpJson = Util.locationToJson(warp);
-                signInfo.put("warp", warpJson);
-            }
+        Location location = warpSign.getLocation();
+        JSONObject locationJson = Util.locationToJson(location);
+        signInfo.put("location", locationJson);
 
-
-            JSONArray linesArray = new JSONArray(warpSign.getLines());
-            signInfo.put("lines", linesArray);
-
-            if(warpSign instanceof RankSign) {
-                RankSign rankSign = (RankSign) warpSign;
-                Rank fromRank = rankSign.getFromRank();
-                signInfo.put("fromRank", fromRank.getName());
-
-                Rank toRank = rankSign.getToRank();
-                signInfo.put("toRank", toRank.getName());
-            } else if(warpSign instanceof LobbySign) {
-                LobbySign lobbySign = (LobbySign) warpSign;
-                Rank requiredRank = lobbySign.getRequiredRank();
-                signInfo.put("requiredRank", requiredRank.getName());
-            } else if(warpSign instanceof TutorialSign) {
-                TutorialSign tutorialSign = (TutorialSign) warpSign;
-                String message = tutorialSign.getMessage();
-                signInfo.put("message", message);
-            }
-
-            sign.put("info", signInfo);
-            signs.put(sign);
-
-            FileWriter fileWriter = new FileWriter(dataFile);
-            fileWriter.write(file.toString());
-            fileWriter.flush();
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        Location warp = warpSign.getWarp();
+        if(warp == null) signInfo.put("warp", JSONObject.NULL);
+        else {
+            JSONObject warpJson = Util.locationToJson(warp);
+            signInfo.put("warp", warpJson);
         }
+
+
+        JSONArray linesArray = new JSONArray(warpSign.getLines());
+        signInfo.put("lines", linesArray);
+
+        if(warpSign instanceof RankSign) {
+            RankSign rankSign = (RankSign) warpSign;
+            Rank fromRank = rankSign.getFromRank();
+            signInfo.put("fromRank", fromRank.getName());
+
+            Rank toRank = rankSign.getToRank();
+            signInfo.put("toRank", toRank.getName());
+        } else if(warpSign instanceof LobbySign) {
+            LobbySign lobbySign = (LobbySign) warpSign;
+            Rank requiredRank = lobbySign.getRequiredRank();
+            signInfo.put("requiredRank", requiredRank.getName());
+        } else if(warpSign instanceof TutorialSign) {
+            TutorialSign tutorialSign = (TutorialSign) warpSign;
+            String message = tutorialSign.getMessage();
+            signInfo.put("message", message);
+        }
+
+        sign.put("info", signInfo);
+        signs.put(sign);
+
+        updateDataFile(file);
     }
 
     public WarpSign jsonToSign(JSONObject jsonObject) {
@@ -166,62 +154,48 @@ public class SignManager extends Manager {
     }
 
     public List<WarpSign> getCurrentSigns() {
+        JSONObject file = getDataFile();
+
+        if(file == null) return null;
+
         List<WarpSign> currentSigns = new ArrayList<>();
 
-        if(dataFile == null) return null;
+        JSONArray signs = file.getJSONArray("signs");
 
-        try {
-            FileReader fileReader = new FileReader(dataFile);
-            JSONTokener jsonTokener = new JSONTokener(fileReader);
-            JSONObject file = new JSONObject(jsonTokener);
+        for(Object sign : signs) {
+            JSONObject jsonSign = new JSONObject(sign.toString());
+            WarpSign warpSign = jsonToSign(jsonSign);
 
-            JSONArray signs = file.getJSONArray("signs");
-
-            for(Object sign : signs) {
-                JSONObject jsonSign = new JSONObject(sign.toString());
-                WarpSign warpSign = jsonToSign(jsonSign);
-
-                if(warpSign != null) currentSigns.add(warpSign);
-            }
-
-            if(!currentSigns.isEmpty()) return currentSigns;
-            else return null;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            if(warpSign != null) currentSigns.add(warpSign);
         }
+
+        if(!currentSigns.isEmpty()) return currentSigns;
+        else return null;
     }
 
     public void setSignLocationToWarp(Location location, Warp warp) {
-        if(dataFile == null || warp == null) return;
+        JSONObject file = getDataFile();
 
-        try {
-            FileReader fileReader = new FileReader(dataFile);
-            JSONTokener jsonTokener = new JSONTokener(fileReader);
-            JSONObject file = new JSONObject(jsonTokener);
+        if(file == null || warp == null) return;
 
-            JSONArray signs = file.getJSONArray("signs");
+        JSONArray signs = file.getJSONArray("signs");
 
-            for(Object sign : signs) {
-                JSONObject jsonSign = (JSONObject) sign;
-                JSONObject signLocationJson = jsonSign.getJSONObject("info").getJSONObject("location");
-                Location signLocation = Util.jsonToLocation(signLocationJson);
-                if(Util.isLocationIgnoringYawPitch(signLocation, location)) {
-                    JSONObject signInfo = jsonSign.getJSONObject("info");
+        for(Object sign : signs) {
+            JSONObject jsonSign = (JSONObject) sign;
+            JSONObject signLocationJson = jsonSign.getJSONObject("info").getJSONObject("location");
+            Location signLocation = Util.jsonToLocation(signLocationJson);
+            if(Util.isLocationIgnoringYawPitch(signLocation, location)) {
+                JSONObject signInfo = jsonSign.getJSONObject("info");
 
-                    JSONObject warpJson = new JSONObject();
-                    warpJson.put("warp", warp.getName());
+                JSONObject warpJson = new JSONObject();
+                warpJson.put("warp", warp.getName());
 
-                    signInfo.put("warp", warpJson);
+                signInfo.put("warp", warpJson);
 
-                    FileWriter fileWriter = new FileWriter(dataFile);
-                    fileWriter.write(file.toString());
-                    fileWriter.flush();
-                    return;
-                }
+                updateDataFile(file);
+
+                break;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

@@ -9,15 +9,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.kcsup.gramersrankupcore.Main;
 import org.kcsup.gramersrankupcore.ranks.Rank;
 import org.kcsup.gramersrankupcore.util.Manager;
 import org.kcsup.gramersrankupcore.util.Pair;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,47 +67,33 @@ public class MenuManager extends Manager {
     public List<Menu> getCurrentMenus() {
         List<Menu> menus = new ArrayList<>();
 
-        if(dataFile == null) return null;
+        JSONObject file = getDataFile();
+        if(file == null) return null;
 
-        try {
-            FileReader fileReader = new FileReader(dataFile);
-            JSONTokener jsonTokener = new JSONTokener(fileReader);
-            JSONObject file = new JSONObject(jsonTokener);
-            JSONArray jsonMenus = file.getJSONArray("menus");
+        JSONArray jsonMenus = file.getJSONArray("menus");
 
-            for(Object o : jsonMenus) {
-                JSONObject jsonMenu = (JSONObject) o;
-                Menu menu = jsonToMenu(jsonMenu);
+        for(Object o : jsonMenus) {
+            JSONObject jsonMenu = (JSONObject) o;
+            Menu menu = jsonToMenu(jsonMenu);
 
-                if(menu != null) menus.add(menu);
-            }
-
-            if(!menus.isEmpty()) return menus;
-            else return null;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            if(menu != null) menus.add(menu);
         }
+
+        if(!menus.isEmpty()) return menus;
+        else return null;
     }
 
     public void storeMenuInstance(Menu menu) {
-        if(dataFile == null || menu == null) return;
+        JSONObject file = getDataFile();
 
-        try {
-            FileReader fileReader = new FileReader(dataFile);
-            JSONTokener jsonTokener = new JSONTokener(fileReader);
-            JSONObject file = new JSONObject(jsonTokener);
-            JSONArray menus = file.getJSONArray("menus");
+        if(file == null || menu == null) return;
 
-            JSONObject jsonMenu = menuToJson(menu);
-            menus.put(jsonMenu);
+        JSONArray menus = file.getJSONArray("menus");
 
-            FileWriter fileWriter = new FileWriter(dataFile);
-            fileWriter.write(file.toString());
-            fileWriter.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        JSONObject jsonMenu = menuToJson(menu);
+        menus.put(jsonMenu);
+
+        updateDataFile(file);
     }
 
     public boolean isMenuInventory(Inventory inventory) {
