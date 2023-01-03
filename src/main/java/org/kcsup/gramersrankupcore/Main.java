@@ -69,17 +69,6 @@ public final class Main extends JavaPlugin {
             }
         }
 
-        // TEST
-//        if(menuManager.getCurrentMenus() != null) {
-//            for (Menu menu : menuManager.getCurrentMenus()) {
-//                for (Player player : Bukkit.getOnlinePlayers()) {
-//                    player.sendMessage(menu.getName());
-//                    player.sendMessage(menu.getItem().getItemMeta().getDisplayName());
-//                    player.getInventory().addItem(menu.getItem());
-//                }
-//            }
-//        }
-
     }
 
     public RankManager getRankManager() {

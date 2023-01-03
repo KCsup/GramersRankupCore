@@ -24,7 +24,7 @@ public class Manager {
         String tempDataPath = main.getDataFolder() + dataPath;
         File returnDataFile = new File(tempDataPath);
             try {
-                if(!returnDataFile.createNewFile()) {
+                if(returnDataFile.createNewFile()) {
                     FileWriter fileWriter = new FileWriter(returnDataFile);
                     fileWriter.write(fileStructure.toString());
                     fileWriter.close();
@@ -55,10 +55,9 @@ public class Manager {
         try {
             FileReader fileReader = new FileReader(dataFile);
             JSONTokener jsonTokener = new JSONTokener(fileReader);
-            JSONObject file = new JSONObject(jsonTokener);
             fileReader.close();
 
-            return file;
+            return new JSONObject(jsonTokener);
         }
         catch (IOException e) {
             e.printStackTrace();
