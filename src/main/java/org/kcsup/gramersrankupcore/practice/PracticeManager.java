@@ -7,18 +7,23 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.kcsup.gramersrankupcore.Main;
+import org.kcsup.gramersrankupcore.util.Manager;
 import org.kcsup.gramersrankupcore.util.Util;
 
 import java.util.HashMap;
 
-public class Practice {
-    private final Main main;
+public class PracticeManager extends Manager {
     private final HashMap<Player, Location> practicing = new HashMap<>();
     private final int practiceItemSlot;
 
-    public Practice(Main main) {
-        this.main = main;
+    public PracticeManager(Main main) {
+        super(main, null, null);
         practiceItemSlot = main.getConfig().getInt("practice-item-slot");
+    }
+
+    @Override
+    public void shutdown() {
+        setAllNotPracticing();
     }
 
     public int getPracticeItemSlot() {

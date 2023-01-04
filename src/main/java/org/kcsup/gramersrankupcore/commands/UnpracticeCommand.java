@@ -22,8 +22,8 @@ public class UnpracticeCommand implements CommandExecutor {
         }
 
         Player player = (Player) sender;
-        if(main.getPractice().isPracticing(player)) {
-            main.getPractice().setNotPracticing(player);
+        if(main.getPracticeManager().isPracticing(player)) {
+            main.getPracticeManager().setNotPracticing(player);
             player.sendMessage(ChatColor.GREEN + "Exited practice mode!");
         } else {
             player.sendMessage(ChatColor.RED + "You aren't currently in practice mode!");

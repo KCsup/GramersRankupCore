@@ -32,7 +32,7 @@ public class SaveCommand implements CommandExecutor {
             return false;
         }
 
-        if(main.getPractice().isPracticing(player)) {
+        if(main.getPracticeManager().isPracticing(player)) {
             player.sendMessage(ChatColor.RED + "You cannot create a save while in practice mode!");
             return false;
         }

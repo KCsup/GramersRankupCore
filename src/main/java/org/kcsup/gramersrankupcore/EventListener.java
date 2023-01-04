@@ -60,20 +60,20 @@ public class EventListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
         if(!player.hasPlayedBefore()) {
-            String message = ChatColor.translateAlternateColorCodes('&', "&a&l\u00AB " + player.getName() + " Joined for the First Time! \u00BB");
+            String message = ChatColor.translateAlternateColorCodes('&', "&a&l« " + player.getName() + " Joined for the First Time! »");
             Bukkit.broadcastMessage(message);
         }
         main.getRankManager().initiatePlayerRank(player);
-        main.getScoreboardUtil().reloadScoreboard();
+        main.getScoreboardManager().reloadScoreboard();
 
         main.getMenuManager().playerMenuCheck(player);
-        main.getVisibilityUtil().visibilityItemCheck(player);
-        main.getVisibilityUtil().updateInvisible();
+        main.getVisibilityManager().visibilityItemCheck(player);
+        main.getVisibilityManager().updateInvisible();
     }
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
-        if(main.getPractice().isPracticing(e.getPlayer())) main.getPractice().setNotPracticing(e.getPlayer());
+        if(main.getPracticeManager().isPracticing(e.getPlayer())) main.getPracticeManager().setNotPracticing(e.getPlayer());
     }
 
     @EventHandler
@@ -87,14 +87,14 @@ public class EventListener implements Listener {
         }
 
         if(e.getItem() != null) {
-            if(e.getItem().equals(main.getPractice().getPracticeItem()) && main.getPractice().isPracticing(player)) {
-                Location location = main.getPractice().getPlayerPracticeLocation(player);
+            if(e.getItem().equals(main.getPracticeManager().getPracticeItem()) && main.getPracticeManager().isPracticing(player)) {
+                Location location = main.getPracticeManager().getPlayerPracticeLocation(player);
                 if(location != null) Util.updatedTeleport(player, location);
                 return;
             }
 
-            if(e.getItem().equals(main.getVisibilityUtil().getVisibilityItem(player))) {
-                main.getVisibilityUtil().toggleVisibility(player);
+            if(e.getItem().equals(main.getVisibilityManager().getVisibilityItem(player))) {
+                main.getVisibilityManager().toggleVisibility(player);
             }
 
             for(Menu menu : main.getMenuManager().getCurrentMenus()) {
@@ -115,7 +115,7 @@ public class EventListener implements Listener {
             if(main.getSignManager().isSign(location)) {
                 e.setCancelled(true);
 
-                if(main.getPractice().isPracticing(player)) {
+                if(main.getPracticeManager().isPracticing(player)) {
                     player.sendMessage(ChatColor.RED + "You cannot use a warp sign while in practice mode!");
                     return;
                 }
@@ -130,7 +130,7 @@ public class EventListener implements Listener {
                         return;
                     }
                     else if(playerRank.getWeight() == rankSign.getFromRank().getWeight()) {
-                        String message = "&a&l\u00AB " + player.getName() + " just Ranked Up to&f " + rankSign.getToRank().getName() + "&a&l! \u00BB";
+                        String message = "&a&l« " + player.getName() + " just Ranked Up to&f " + rankSign.getToRank().getName() + "&a&l! »";
                         String rankUp = ChatColor.translateAlternateColorCodes('&', message);
                         Bukkit.broadcastMessage(rankUp);
 
@@ -198,7 +198,7 @@ public class EventListener implements Listener {
         if(e.getInventory().getTitle().equals("Ranks")) {
             e.setCancelled(true);
 
-            if(main.getPractice().isPracticing(player)) {
+            if(main.getPracticeManager().isPracticing(player)) {
                 player.sendMessage(ChatColor.RED + "You cannot use the ranks menu while in practice mode.");
                 player.closeInventory();
                 return;
@@ -240,7 +240,7 @@ public class EventListener implements Listener {
             if(e.getCurrentItem().getType().equals(Material.BOOK)) {
                 for(Save s : main.getSaveManager().getPlayerSaves(player)) {
                     if(e.getCurrentItem().getItemMeta().getDisplayName().equals(s.getName())) {
-                        if(main.getPractice().isPracticing(player)) {
+                        if(main.getPracticeManager().isPracticing(player)) {
                             player.closeInventory();
 
                             player.sendMessage(ChatColor.RED + "You cannot teleport to a save while you're in practice mode!");
@@ -260,13 +260,13 @@ public class EventListener implements Listener {
             return;
         }
 
-        if(e.getCurrentItem().equals(main.getPractice().getPracticeItem()) &&
-                main.getPractice().isPracticing(player)) {
+        if(e.getCurrentItem().equals(main.getPracticeManager().getPracticeItem()) &&
+                main.getPracticeManager().isPracticing(player)) {
             e.setCancelled(true);
             return;
         }
 
-        if(e.getCurrentItem().equals(main.getVisibilityUtil().getVisibilityItem(player))) {
+        if(e.getCurrentItem().equals(main.getVisibilityManager().getVisibilityItem(player))) {
             e.setCancelled(true);
             return;
         }
@@ -282,13 +282,13 @@ public class EventListener implements Listener {
 
         if(e.getItemDrop() == null) return;
 
-        if(e.getItemDrop().getItemStack().equals(main.getPractice().getPracticeItem()) &&
-                main.getPractice().isPracticing(player)) {
+        if(e.getItemDrop().getItemStack().equals(main.getPracticeManager().getPracticeItem()) &&
+                main.getPracticeManager().isPracticing(player)) {
             e.setCancelled(true);
             return;
         }
 
-        if(e.getItemDrop().getItemStack().equals(main.getVisibilityUtil().getVisibilityItem(player))) {
+        if(e.getItemDrop().getItemStack().equals(main.getVisibilityManager().getVisibilityItem(player))) {
             e.setCancelled(true);
             return;
         }

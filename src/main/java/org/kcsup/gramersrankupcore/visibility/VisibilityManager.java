@@ -7,19 +7,25 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.kcsup.gramersrankupcore.Main;
+import org.kcsup.gramersrankupcore.util.Manager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class VisibilityUtil {
-    private final Main main;
+public class VisibilityManager extends Manager {
     private final List<Player> invisible = new ArrayList<>();
     private final List<Player> onCooldown = new ArrayList<>();
     private final int visibilityItemSlot;
 
-    public VisibilityUtil(Main main) {
-        this.main = main;
+    public VisibilityManager(Main main) {
+        super(main, null, null);
+
         visibilityItemSlot = main.getConfig().getInt("visibility-item-slot");
+    }
+
+    @Override
+    public void shutdown() {
+        purgeInvisible();
     }
 
     public ItemStack getVisibilityItem(Player player) {
@@ -54,9 +60,7 @@ public class VisibilityUtil {
             setInvisible(player);
         }
         onCooldown.add(player);
-        Bukkit.getScheduler().scheduleSyncDelayedTask(main, () -> {
-            onCooldown.remove(player);
-        }, 3 * 10);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(main, () -> onCooldown.remove(player), 3 * 10);
     }
 
     private void setInvisible(Player player) {

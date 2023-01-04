@@ -30,6 +30,16 @@ public class SignManager extends Manager {
         signCooldown = new ArrayList<>();
     }
 
+    @Override
+    public void startup() {
+        reloadAllSigns();
+    }
+
+    @Override
+    public void shutdown() {
+        clearCooldown();
+    }
+
     public boolean isOnCooldown(Player player) {
         return signCooldown.contains(player);
     }

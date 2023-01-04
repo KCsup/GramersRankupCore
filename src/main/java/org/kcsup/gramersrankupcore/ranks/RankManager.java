@@ -38,6 +38,11 @@ public class RankManager extends Manager {
         }
     }
 
+    @Override
+    public void startup() {
+        initiateAllPlayerRanks();
+    }
+
     public List<Rank> getCurrentRanks() {
         return currentRanks;
     }
@@ -156,7 +161,7 @@ public class RankManager extends Manager {
                 break;
             }
         }
-        main.getScoreboardUtil().reloadScoreboard();
+        main.getScoreboardManager().reloadScoreboard();
     }
 
     public void initiateAllPlayerRanks() {
@@ -183,6 +188,6 @@ public class RankManager extends Manager {
 
         updateDataFile(file);
 
-        main.getScoreboardUtil().reloadScoreboard();
+        main.getScoreboardManager().reloadScoreboard();
     }
 }

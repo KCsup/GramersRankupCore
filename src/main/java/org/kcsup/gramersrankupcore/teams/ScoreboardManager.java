@@ -7,15 +7,20 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.kcsup.gramersrankupcore.Main;
 import org.kcsup.gramersrankupcore.ranks.Rank;
+import org.kcsup.gramersrankupcore.util.Manager;
 
 import java.util.List;
 
-public class ScoreboardUtil {
-    private final Main main;
+public class ScoreboardManager extends Manager {
     private Scoreboard scoreboard;
 
-    public ScoreboardUtil(Main main) {
-        this.main = main;
+    public ScoreboardManager(Main main) {
+        super(main, null, null);
+    }
+
+    @Override
+    public void startup() {
+        reloadScoreboard();
     }
 
     public Scoreboard getScoreboard() {

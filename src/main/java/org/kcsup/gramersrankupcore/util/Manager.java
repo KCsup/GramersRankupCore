@@ -18,9 +18,13 @@ public class Manager {
     public Manager(Main main, String dataPath, JSONObject  fileStructure) {
         this.main = main;
         this.dataFile = filesCheck(dataPath, fileStructure);
+
+        main.getManagers().add(this);
     }
 
     private File filesCheck(String dataPath, JSONObject fileStructure) {
+        if(dataPath == null || fileStructure == null) return null;
+
         String tempDataPath = main.getDataFolder() + dataPath;
         File returnDataFile = new File(tempDataPath);
             try {
@@ -55,13 +59,17 @@ public class Manager {
         try {
             FileReader fileReader = new FileReader(dataFile);
             JSONTokener jsonTokener = new JSONTokener(fileReader);
+            JSONObject file = new JSONObject(jsonTokener);
             fileReader.close();
 
-            return new JSONObject(jsonTokener);
+            return file;
         }
         catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
+
+    public void startup() { }
+    public void shutdown() { }
 }

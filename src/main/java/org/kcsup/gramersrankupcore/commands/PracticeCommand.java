@@ -22,12 +22,12 @@ public class PracticeCommand implements CommandExecutor {
         }
 
         Player player = (Player) sender;
-        if(!main.getPractice().isPracticing(player)) {
-            main.getPractice().setPracticing(player);
+        if(!main.getPracticeManager().isPracticing(player)) {
+            main.getPracticeManager().setPracticing(player);
             player.sendMessage(ChatColor.GREEN + "Entered practice mode!");
         }
         else {
-            main.getPractice().setNotPracticing(player);
+            main.getPracticeManager().setNotPracticing(player);
             player.sendMessage(ChatColor.GREEN + "Exited practice mode!");
         }
 
